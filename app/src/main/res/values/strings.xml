@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Sound Editor</string>
+    <string name="load_track">Load</string>
+    <string name="show_equalizer">Equalizer</string>
+    <string name="recordScreen">Экран записи трека</string>
+    <string name="playbackScreen">
+        Экран \n
+        воспроизведения \n
+        трека
+    </string>
+    <string name="recordButton">RECORD</string>
+    <string name="playbackButton">PLAY</string>
+</resources>
