@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 //Почитать про ModelViewPresenter и MVVM
 //Почитать про Clean Architecture и SOLID
 //Git
+//some changes
 
 internal class MainActivity : AppCompatActivity(), MainScreenView {
 
