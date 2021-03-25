@@ -9,7 +9,7 @@ import com.school.soundeditor.Navigator
 import com.school.soundeditor.R
 import kotlinx.android.synthetic.main.activity_track_record.*
 
-class RecordActivity : AppCompatActivity(), RecordScreenView {
+internal class RecordActivity : AppCompatActivity(), RecordScreenView {
 
     private val presenter: RecordScreenPresenter = RecordPresenter(this)
     private lateinit var navigator: Navigator

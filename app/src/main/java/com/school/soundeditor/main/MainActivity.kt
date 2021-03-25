@@ -7,6 +7,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.school.soundeditor.Navigator
 import com.school.soundeditor.R
+import com.school.soundeditor.equalizer.EqualizerActivity
+import com.school.soundeditor.playback.PlaybackActivity
+import com.school.soundeditor.record.RecordActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -27,7 +30,6 @@ internal class MainActivity : AppCompatActivity(), MainScreenView {
     }
 
     private fun initViews() {
-        navigator = Navigator(this)
         loadTrackButton.setOnClickListener {
             presenter.onLoadTrack()
         }
@@ -38,15 +40,18 @@ internal class MainActivity : AppCompatActivity(), MainScreenView {
                     true
                 }
                 R.id.equalizer_item -> {
-                    navigator.showEqualizer()
+                    Navigator.packAndStart(this, EqualizerActivity.getIntent(this))
+                    /*startActivity(Intent(this, EqualizerActivity::class.java).apply {
+                        putExtra("message", "Hello from $localClassName")
+                    })*/
                     true
                 }
                 R.id.to_record_item -> {
-                    navigator.openRecordScreen()
+                    Navigator.packAndStart(this, RecordActivity.getIntent(this))
                     true
                 }
                 R.id.to_playback_item -> {
-                    navigator.openPlaybackScreen()
+                    Navigator.packAndStart(this, PlaybackActivity.getIntent(this))
                     true
                 }
                 else -> false
@@ -61,7 +66,7 @@ internal class MainActivity : AppCompatActivity(), MainScreenView {
     }
 
     override fun showTrack(mp3: String) {
-        Toast.makeText(this, mp3, Toast.LENGTH_SHORT).show()
+        Toast.makeText(baseContext, mp3, Toast.LENGTH_SHORT).show()
     }
 
     companion object {
