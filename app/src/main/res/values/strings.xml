@@ -10,4 +10,9 @@
     </string>
     <string name="recordButton">RECORD</string>
     <string name="playbackButton">PLAY</string>
+    <string name="equalizer_item">Equalizer</string>
+    <string name="record_item">Record</string>
+    <string name="playback_item">Playback</string>
+    <string name="main_screen_item">Main screen</string>
+    <string name="equalizer_screen">Экран эквалайзера</string>
 </resources>

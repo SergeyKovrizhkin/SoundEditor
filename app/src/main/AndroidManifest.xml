@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SoundEditor">
-        <activity android:name=".MainActivity">
+        <activity android:name=".main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -17,13 +17,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".RecordActivity">
-
-        </activity>
-
-        <activity android:name=".PlaybackActivity">
-
-        </activity>
+        <activity android:name=".record.RecordActivity" />
+        <activity android:name=".playback.PlaybackActivity" />
+        <activity android:name=".equalizer.EqualizerActivity" />
     </application>
-
 </manifest>

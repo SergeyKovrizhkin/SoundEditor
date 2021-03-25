@@ -1,4 +1,4 @@
-package com.school.soundeditor
+package com.school.soundeditor.main
 
 internal class MainPresenter(private val view: MainScreenView) : MainScreenPresenter {
 

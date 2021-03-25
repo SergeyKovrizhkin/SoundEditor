@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/main_screen_item"
+        android:icon="@android:drawable/ic_dialog_dialer"
+        android:title="@string/main_screen_item" />
+
+    <item
+        android:id="@+id/equalizer_item"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:title="@string/equalizer_item" />
+
+    <item
+        android:id="@+id/to_record_item"
+        android:icon="@android:drawable/btn_radio"
+        android:title="@string/record_item" />
+
+    <item
+        android:id="@+id/to_playback_item"
+        android:icon="@android:drawable/ic_media_play"
+        android:title="@string/playback_item" />
+</menu>
