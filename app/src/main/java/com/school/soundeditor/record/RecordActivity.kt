@@ -7,12 +7,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.school.soundeditor.Navigator
 import com.school.soundeditor.R
+import com.school.soundeditor.equalizer.EqualizerActivity
+import com.school.soundeditor.main.MainActivity
+import com.school.soundeditor.playback.PlaybackActivity
 import kotlinx.android.synthetic.main.activity_track_record.*
 
-class RecordActivity : AppCompatActivity(), RecordScreenView {
+internal class RecordActivity : AppCompatActivity(), RecordScreenView {
 
     private val presenter: RecordScreenPresenter = RecordPresenter(this)
-    private lateinit var navigator: Navigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,23 +23,22 @@ class RecordActivity : AppCompatActivity(), RecordScreenView {
     }
 
     private fun initViews() {
-        navigator = Navigator(this)
         bottomNavigationRecordScreen.selectedItemId = R.id.to_record_item
         bottomNavigationRecordScreen.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.main_screen_item -> {
-                    navigator.showMainScreen()
+                    Navigator.packAndStart(this, MainActivity.getIntent(this))
                     true
                 }
                 R.id.equalizer_item -> {
-                    navigator.showEqualizer()
+                    Navigator.packAndStart(this, EqualizerActivity.getIntent(this))
                     true
                 }
                 R.id.to_record_item -> {
                     true
                 }
                 R.id.to_playback_item -> {
-                    navigator.openPlaybackScreen()
+                    Navigator.packAndStart(this, PlaybackActivity.getIntent(this))
                     true
                 }
                 else -> false
