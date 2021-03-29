@@ -15,4 +15,20 @@
     <string name="playback_item">Playback</string>
     <string name="main_screen_item">Main screen</string>
     <string name="equalizer_screen">Экран эквалайзера</string>
+    <string name="text_for_stopwatch">00:00:00</string>
+    <string name="save_record_item">Сохранить</string>
+    <string name="start_record_item">Запись</string>
+    <string name="play_record_item">Прослушать</string>
+    <string name="settings_record_item">Настройки</string>
+    <string name="some_parameter_1">some parameter 1</string>
+    <string name="some_parameter_4">some parameter 4</string>
+    <string name="some_parameter_3">some parameter 3</string>
+    <string name="some_parameter_2">some parameter 2</string>
+    <string name="load_item">Добавить</string>
+    <string name="file_item">Файл</string>
+    <string name="redactor_item">Ред.</string>
+    <string name="view_item">Вид</string>
+    <string name="input_item">Вставка</string>
+    <string name="track_item">Трек</string>
+    <string name="effects_item">Эфф.</string>
 </resources>

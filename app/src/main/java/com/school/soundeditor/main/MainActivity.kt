@@ -29,9 +29,6 @@ internal class MainActivity : AppCompatActivity(), MainScreenView {
     }
 
     private fun initViews() {
-        loadTrackButton.setOnClickListener {
-            presenter.onLoadTrack()
-        }
         bottomNavigationMainScreen.selectedItemId = R.id.main_screen_item
         bottomNavigationMainScreen.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {

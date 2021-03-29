@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/confirm_item"
+        android:icon="@android:drawable/ic_menu_save"
+        android:title="@string/save_record_item"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/play_pause_item"
+        android:icon="@android:drawable/ic_media_play"
+        android:title="@string/play_record_item"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/settings_item"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="@string/settings_record_item"
+        app:showAsAction="always"/>
+</menu>
