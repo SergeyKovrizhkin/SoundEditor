@@ -26,19 +26,17 @@
         app:menu="@menu/main_top_tool_bar" />
 
 
-
-
     <TextView
         android:id="@+id/mainSpaceForHello"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
         android:textAlignment="center"
-        android:textSize="25sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomToolBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/nestedScrollView" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationMainScreen"
@@ -50,6 +48,7 @@
         app:menu="@menu/main_navigation" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomToolBar"
@@ -62,17 +61,18 @@
             android:layout_height="0dp">
 
             <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/tracksLinearLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
                 <FrameLayout
                     android:id="@+id/trackFrameLayout1"
-                    android:tag="here will be some tracks"
                     android:layout_width="400dp"
                     android:layout_height="50dp"
                     android:layout_marginBottom="8dp"
                     android:background="#C8C8C8"
+                    android:tag="here will be some tracks"
                     app:layout_constraintBottom_toTopOf="@+id/bottomToolBar"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -80,11 +80,11 @@
 
                 <FrameLayout
                     android:id="@+id/trackFrameLayout2"
-                    android:tag="here will be some tracks"
                     android:layout_width="400dp"
                     android:layout_height="50dp"
                     android:layout_marginBottom="8dp"
                     android:background="#C8C8C8"
+                    android:tag="here will be some tracks"
                     app:layout_constraintBottom_toTopOf="@+id/bottomToolBar"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -92,11 +92,11 @@
 
                 <FrameLayout
                     android:id="@+id/trackFrameLayout3"
-                    android:tag="here will be some tracks"
                     android:layout_width="400dp"
                     android:layout_height="50dp"
                     android:layout_marginBottom="8dp"
                     android:background="#C8C8C8"
+                    android:tag="here will be some tracks"
                     app:layout_constraintBottom_toTopOf="@+id/bottomToolBar"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -104,11 +104,11 @@
 
                 <FrameLayout
                     android:id="@+id/trackFrameLayout4"
-                    android:tag="here will be some tracks"
                     android:layout_width="400dp"
                     android:layout_height="50dp"
                     android:layout_marginBottom="8dp"
                     android:background="#C8C8C8"
+                    android:tag="here will be some tracks"
                     app:layout_constraintBottom_toTopOf="@+id/bottomToolBar"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -116,11 +116,11 @@
 
                 <FrameLayout
                     android:id="@+id/trackFrameLayout5"
-                    android:tag="here will be some tracks"
                     android:layout_width="400dp"
                     android:layout_height="50dp"
                     android:layout_marginBottom="8dp"
                     android:background="#C8C8C8"
+                    android:tag="here will be some tracks"
                     app:layout_constraintBottom_toTopOf="@+id/bottomToolBar"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
