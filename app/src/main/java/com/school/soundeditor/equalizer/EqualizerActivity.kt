@@ -23,11 +23,10 @@ internal class EqualizerActivity : AppCompatActivity(), EqualizerScreenView {
     }
 
     private fun initViews() {
-        bottomNavigationEqualizerScreen.selectedItemId = R.id.equalizer_item
         bottomNavigationEqualizerScreen.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.main_screen_item -> {
-                    Navigator.packAndStart(this, MainActivity.getIntent(this))
+                    Navigator.packAndStart(this, MainActivity.getIntent(this).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP))
                     true
                 }
                 R.id.equalizer_item -> {
@@ -44,18 +43,12 @@ internal class EqualizerActivity : AppCompatActivity(), EqualizerScreenView {
                 else -> false
             }
         }
-        equalizerSpaceForHello.text = intent.getStringExtra("message")
+        //equalizerSpaceForHello.text = intent.getStringExtra("message")
     }
 
-    override fun onRestart() {
-        super.onRestart()
+    override fun onResume() {
+        super.onResume()
         bottomNavigationEqualizerScreen.selectedItemId = R.id.equalizer_item
-    }
-
-    companion object {
-        fun getIntent(context: Context): Intent {
-            return Intent(context, EqualizerActivity::class.java)
-        }
     }
 
     override fun getTrack(mp3: String) {
@@ -64,6 +57,12 @@ internal class EqualizerActivity : AppCompatActivity(), EqualizerScreenView {
 
     override fun showTrack(mp3: String) {
         Toast.makeText(this, mp3, Toast.LENGTH_SHORT).show()
+    }
+
+    companion object {
+        fun getIntent(context: Context): Intent {
+            return Intent(context, EqualizerActivity::class.java)
+        }
     }
 }
 

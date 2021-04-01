@@ -23,11 +23,10 @@ internal class PlaybackActivity : AppCompatActivity(), PlaybackScreenView {
     }
 
     private fun initViews() {
-        bottomNavigationPlaybackScreen.selectedItemId = R.id.to_playback_item
         bottomNavigationPlaybackScreen.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.main_screen_item -> {
-                    Navigator.packAndStart(this, MainActivity.getIntent(this))
+                    Navigator.packAndStart(this, MainActivity.getIntent(this).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP))
                     true
                 }
                 R.id.equalizer_item -> {
@@ -44,18 +43,12 @@ internal class PlaybackActivity : AppCompatActivity(), PlaybackScreenView {
                 else -> false
             }
         }
-        playbackSpaceForHello.text = intent.getStringExtra("message")
+        //playbackSpaceForHello.text = intent.getStringExtra("message")
     }
 
-    override fun onRestart() {
-        super.onRestart()
+    override fun onResume() {
+        super.onResume()
         bottomNavigationPlaybackScreen.selectedItemId = R.id.to_playback_item
-    }
-
-    companion object {
-        fun getIntent(context: Context): Intent {
-            return Intent(context, PlaybackActivity::class.java)
-        }
     }
 
     override fun getTrack(mp3: String) {
@@ -64,5 +57,11 @@ internal class PlaybackActivity : AppCompatActivity(), PlaybackScreenView {
 
     override fun showTrack(mp3: String) {
         Toast.makeText(this, mp3, Toast.LENGTH_SHORT).show()
+    }
+
+    companion object {
+        fun getIntent(context: Context): Intent {
+            return Intent(context, PlaybackActivity::class.java)
+        }
     }
 }

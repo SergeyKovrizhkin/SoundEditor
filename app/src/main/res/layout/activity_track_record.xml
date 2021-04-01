@@ -4,18 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/recordSpaceForHello"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textAlignment="center"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomToolBar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/trackFrameLayout" />
-
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationRecordScreen"
         android:layout_width="match_parent"
@@ -25,23 +13,51 @@
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/main_navigation" />
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/bottomToolBar"
+    <LinearLayout
+        android:id="@+id/bottomToolsRecordScreen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationRecordScreen"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationRecordScreen"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/record_tool_bar"
-        />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/save_item_description"
+            android:src="@android:drawable/ic_menu_save" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/record_item_description"
+            android:src="@android:drawable/ic_btn_speak_now" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/play_record_item_description"
+            android:src="@android:drawable/ic_media_play" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/settings_item_description"
+            android:src="@android:drawable/ic_menu_preferences" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/stopwatchTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/text_for_stopwatch"
-        android:textSize="90sp"
+        android:textSize="80sp"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationRecordScreen"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,8 +71,5 @@
         android:background="#C8C8C8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/stopwatchTextView">
-
-    </FrameLayout>
-
+        app:layout_constraintTop_toBottomOf="@+id/stopwatchTextView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

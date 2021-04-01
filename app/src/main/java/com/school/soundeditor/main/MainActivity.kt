@@ -29,7 +29,6 @@ internal class MainActivity : AppCompatActivity(), MainScreenView {
     }
 
     private fun initViews() {
-        bottomNavigationMainScreen.selectedItemId = R.id.main_screen_item
         bottomNavigationMainScreen.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.main_screen_item -> {
@@ -50,12 +49,7 @@ internal class MainActivity : AppCompatActivity(), MainScreenView {
                 else -> false
             }
         }
-        mainSpaceForHello.text = intent.getStringExtra("message")
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-        bottomNavigationMainScreen.selectedItemId = R.id.main_screen_item
+        //mainSpaceForHello.text = intent.getStringExtra("message")
     }
 
     override fun showTrack(mp3: String) {

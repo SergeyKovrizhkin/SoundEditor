@@ -1,25 +1,14 @@
 <resources>
     <string name="app_name">Sound Editor</string>
-    <string name="load_track">Load</string>
-    <string name="show_equalizer">Equalizer</string>
-    <string name="recordScreen">Экран записи трека</string>
-    <string name="playbackScreen">
-        Экран \n
-        воспроизведения \n
-        трека
-    </string>
-    <string name="recordButton">RECORD</string>
-    <string name="playbackButton">PLAY</string>
     <string name="equalizer_item">Equalizer</string>
     <string name="record_item">Record</string>
     <string name="playback_item">Playback</string>
     <string name="main_screen_item">Main screen</string>
-    <string name="equalizer_screen">Экран эквалайзера</string>
     <string name="text_for_stopwatch">00:00:00</string>
-    <string name="save_record_item">Сохранить</string>
-    <string name="start_record_item">Запись</string>
-    <string name="play_record_item">Прослушать</string>
-    <string name="settings_record_item">Настройки</string>
+    <string name="save_item_description">Сохранить</string>
+    <string name="record_item_description">Запись</string>
+    <string name="play_record_item_description">Прослушать</string>
+    <string name="settings_item_description">Настройки</string>
     <string name="some_parameter_1">some parameter 1</string>
     <string name="some_parameter_4">some parameter 4</string>
     <string name="some_parameter_3">some parameter 3</string>

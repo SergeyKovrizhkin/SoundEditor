@@ -23,11 +23,10 @@ internal class RecordActivity : AppCompatActivity(), RecordScreenView {
     }
 
     private fun initViews() {
-        bottomNavigationRecordScreen.selectedItemId = R.id.to_record_item
         bottomNavigationRecordScreen.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.main_screen_item -> {
-                    Navigator.packAndStart(this, MainActivity.getIntent(this))
+                    Navigator.packAndStart(this, MainActivity.getIntent(this).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP))
                     true
                 }
                 R.id.equalizer_item -> {
@@ -44,18 +43,12 @@ internal class RecordActivity : AppCompatActivity(), RecordScreenView {
                 else -> false
             }
         }
-        recordSpaceForHello.text = intent.getStringExtra("message")
+        //recordSpaceForHello.text = intent.getStringExtra("message")
     }
 
-    override fun onRestart() {
-        super.onRestart()
+    override fun onResume() {
+        super.onResume()
         bottomNavigationRecordScreen.selectedItemId = R.id.to_record_item
-    }
-
-    companion object {
-        fun getIntent(context: Context): Intent {
-            return Intent(context, RecordActivity::class.java)
-        }
     }
 
     override fun getTrack(mp3: String) {
@@ -64,5 +57,11 @@ internal class RecordActivity : AppCompatActivity(), RecordScreenView {
 
     override fun showTrack(mp3: String) {
         Toast.makeText(this, mp3, Toast.LENGTH_SHORT).show()
+    }
+
+    companion object {
+        fun getIntent(context: Context): Intent {
+            return Intent(context, RecordActivity::class.java)
+        }
     }
 }
