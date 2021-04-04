@@ -1,15 +1,12 @@
 package com.school.soundeditor.main
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.school.soundeditor.Navigator
 import com.school.soundeditor.R
-import com.school.soundeditor.equalizer.EqualizerActivity
-import com.school.soundeditor.playback.PlaybackActivity
-import com.school.soundeditor.record.RecordActivity
+import com.school.soundeditor.equalizer.EqualizerFragment
+import com.school.soundeditor.playback.PlaybackFragment
+import com.school.soundeditor.record.RecordFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -20,45 +17,75 @@ internal class MainActivity : AppCompatActivity(), MainScreenView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        initViews()
+        initBottomNavigation()
     }
 
-    override fun onResume() {
-        super.onResume()
-        bottomNavigationMainScreen.selectedItemId = R.id.main_screen_item
-    }
-
-    private fun initViews() {
-        bottomNavigationMainScreen.setOnNavigationItemSelectedListener { item ->
+    private fun initBottomNavigation() {
+        openMainFragment()
+        bottomNavigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.main_screen_item -> {
+                    openMainFragment()
                     true
                 }
                 R.id.equalizer_item -> {
-                    Navigator.packAndStart(this, EqualizerActivity.getIntent(this))
+                    openEqualizerFragment()
                     true
                 }
                 R.id.to_record_item -> {
-                    Navigator.packAndStart(this, RecordActivity.getIntent(this))
+                    openRecordFragment()
                     true
                 }
                 R.id.to_playback_item -> {
-                    Navigator.packAndStart(this, PlaybackActivity.getIntent(this))
+                    openPlaybackFragment()
                     true
                 }
                 else -> false
             }
         }
-        //mainSpaceForHello.text = intent.getStringExtra("message")
+    }
+
+    private fun openMainFragment() {
+        val fragmentManager = supportFragmentManager
+        val transaction = fragmentManager.beginTransaction()
+        val mainFragment = MainFragment.newInstance("", "")
+        transaction.add(R.id.fragment_container, mainFragment)
+        transaction.addToBackStack("")
+        transaction.commitAllowingStateLoss()
+    }
+
+    private fun openEqualizerFragment() {
+        val fragmentManager = supportFragmentManager
+        val transaction = fragmentManager.beginTransaction()
+        val equalizerFragment = EqualizerFragment.newInstance("MySwitch", "")
+        transaction.add(R.id.fragment_container, equalizerFragment)
+        transaction.addToBackStack("")
+        transaction.commitAllowingStateLoss()
+    }
+
+    private fun openRecordFragment() {
+        val fragmentManager = supportFragmentManager
+        val transaction = fragmentManager.beginTransaction()
+        val recordFragment = RecordFragment.newInstance("", "")
+        transaction.add(R.id.fragment_container, recordFragment)
+        transaction.addToBackStack("")
+        transaction.commitAllowingStateLoss()
+    }
+
+    private fun openPlaybackFragment() {
+        val fragmentManager = supportFragmentManager
+        val transaction = fragmentManager.beginTransaction()
+        val playbackFragment = PlaybackFragment.newInstance("", "")
+        transaction.add(R.id.fragment_container, playbackFragment)
+        transaction.addToBackStack("")
+        transaction.commitAllowingStateLoss()
+    }
+
+    override fun getTrack(mp3: String) {
+        TODO("Not yet implemented")
     }
 
     override fun showTrack(mp3: String) {
         Toast.makeText(this, mp3, Toast.LENGTH_SHORT).show()
-    }
-
-    companion object {
-        fun getIntent(context: Context): Intent {
-            return Intent(context, MainActivity::class.java)
-        }
     }
 }

@@ -2,17 +2,32 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <LinearLayout
-        android:id="@+id/bottomToolsPlaybackScreen"
+        android:id="@+id/bottomToolsRecordScreen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="10dp"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigationPlaybackScreen"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/save_item_description"
+            android:src="@android:drawable/ic_menu_save" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/record_item_description"
+            android:src="@android:drawable/ic_btn_speak_now" />
 
         <ImageView
             android:layout_width="0dp"
@@ -29,23 +44,24 @@
             android:src="@android:drawable/ic_menu_preferences" />
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/trackFrameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:background="#C8C8C8"
-        app:layout_constraintBottom_toTopOf="@+id/bottomToolsPlaybackScreen"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationPlaybackScreen"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/stopwatchTextView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/text_for_stopwatch"
+        android:textSize="80sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/main_navigation" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.25" />
 
+    <FrameLayout
+        android:id="@+id/trackFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="#C8C8C8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stopwatchTextView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

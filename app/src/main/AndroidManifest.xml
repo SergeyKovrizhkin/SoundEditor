@@ -17,18 +17,5 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".record.RecordActivity"
-            android:launchMode="singleTask"
-            android:taskAffinity=""/>
-
-        <activity
-            android:name=".playback.PlaybackActivity"
-            android:launchMode="singleInstance"
-            android:taskAffinity=""/>
-
-        <activity
-            android:name=".equalizer.EqualizerActivity" />
     </application>
 </manifest>
