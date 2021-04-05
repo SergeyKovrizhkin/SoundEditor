@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SoundEditor">
         <activity
-            android:name=".main.MainActivity">
+            android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
