@@ -15,10 +15,7 @@ import kotlinx.android.synthetic.main.fragment_equalizer.*
 internal class EqualizerFragment : Fragment(), EqualizerScreenView {
 
     private val presenter: EqualizerScreenPresenter = EqualizerPresenter(this)
-
-    // TODO: Rename and change types of parameters
     private var param1: String? = null
-    private var param2: String? = null
     private var listener: OnEqualizerSave? = null
 
     override fun onAttach(context: Context) {
@@ -42,7 +39,6 @@ internal class EqualizerFragment : Fragment(), EqualizerScreenView {
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
         }
         switch1.text = param1
 
@@ -56,7 +52,7 @@ internal class EqualizerFragment : Fragment(), EqualizerScreenView {
     }
 
     override fun showTrack(mp3: String) {
-        //Toast.makeText(this, mp3, Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), mp3, Toast.LENGTH_SHORT).show()
     }
 
     fun setListener(listener: OnEqualizerSave) {
@@ -70,14 +66,12 @@ internal class EqualizerFragment : Fragment(), EqualizerScreenView {
     companion object {
 
         private const val ARG_PARAM1 = "param1"
-        private const val ARG_PARAM2 = "param2"
 
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(param1: String) =
             EqualizerFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
                 }
             }
     }

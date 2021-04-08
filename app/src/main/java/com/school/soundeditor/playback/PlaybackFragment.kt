@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.school.soundeditor.Data
 import com.school.soundeditor.R
@@ -11,8 +12,6 @@ import com.school.soundeditor.R
 internal class PlaybackFragment : Fragment(), PlaybackScreenView {
 
     private val presenter: PlaybackScreenPresenter = PlaybackPresenter(this)
-
-    // TODO: Rename and change types of parameters
     private var param1: Data? = null
 
     override fun onCreateView(
@@ -34,7 +33,7 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
     }
 
     override fun showTrack(mp3: String) {
-        //Toast.makeText(this, mp3, Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), mp3, Toast.LENGTH_SHORT).show()
     }
 
     companion object {

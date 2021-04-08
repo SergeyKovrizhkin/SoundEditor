@@ -4,10 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.school.soundeditor.R
 
-class RecordFragment : Fragment(), RecordScreenView {
+internal class RecordFragment : Fragment(), RecordScreenView {
 
     private val presenter: RecordScreenPresenter = RecordPresenter(this)
 
@@ -23,13 +24,12 @@ class RecordFragment : Fragment(), RecordScreenView {
     }
 
     override fun showTrack(mp3: String) {
-        //Toast.makeText(this, mp3, Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), mp3, Toast.LENGTH_SHORT).show()
     }
 
     companion object {
 
         @JvmStatic
-        fun newInstance() =
-            RecordFragment()
+        fun newInstance() = RecordFragment()
     }
 }

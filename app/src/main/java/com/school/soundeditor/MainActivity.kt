@@ -3,6 +3,7 @@ package com.school.soundeditor
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.school.soundeditor.equalizer.EqualizerFragment
 import com.school.soundeditor.main.MainFragment
@@ -25,37 +26,48 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
     }
 
     private fun initBottomNavigation() {
-        val transaction = supportFragmentManager.beginTransaction()
+        var transaction = supportFragmentManager.beginTransaction()
         openMainFragment(transaction)
+        transaction.addToBackStack("")
+        transaction.commitAllowingStateLoss()
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
+            transaction = supportFragmentManager.beginTransaction()
             when (item.itemId) {
                 R.id.main_screen_item -> {
                     openMainFragment(transaction)
-                    true
                 }
                 R.id.equalizer_item -> {
-                    openEqualizerFragment()
-                    true
+                    openEqualizerFragment(transaction)
                 }
                 R.id.to_record_item -> {
-                    openRecordFragment()
-                    true
+                    openRecordFragment(transaction)
                 }
                 R.id.to_playback_item -> {
-                    openPlaybackFragment()
-                    true
+                    openPlaybackFragment(transaction)
                 }
-                else -> false
+                else -> {
+                }
             }
+            transaction.addToBackStack("")
+            transaction.commitAllowingStateLoss()
+            true
         }
-        transaction.addToBackStack("")
-        transaction.commitAllowingStateLoss()
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
         if (supportFragmentManager.fragments.isEmpty()) {
             finish()
+        }
+        when (getVisibleFragment()) {
+            is MainFragment -> bottomNavigation.menu.findItem(R.id.main_screen_item).isChecked =
+                true
+            is EqualizerFragment -> bottomNavigation.menu.findItem(R.id.equalizer_item).isChecked =
+                true
+            is RecordFragment -> bottomNavigation.menu.findItem(R.id.to_record_item).isChecked =
+                true
+            is PlaybackFragment -> bottomNavigation.menu.findItem(R.id.to_playback_item).isChecked =
+                true
         }
         /*
         val fragment = supportFragmentManager.findFragmentByTag(RECORD_FRAGMENT)
@@ -64,41 +76,39 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
         }*/
     }
 
+    private fun getVisibleFragment(): Fragment? {
+        var visibleFragment: Fragment? = null
+        supportFragmentManager.fragments.forEach {
+            if (it.isVisible) {
+                visibleFragment = it
+            }
+        }
+        return visibleFragment
+    }
+
     private fun openMainFragment(transaction: FragmentTransaction) {
-        val mainFragment = MainFragment.newInstance("", "")
+        val mainFragment = MainFragment.newInstance()
         transaction.add(R.id.fragment_container, mainFragment, MAIN_FRAGMENT)
     }
 
-    private fun openEqualizerFragment() {
-        val fragmentManager = supportFragmentManager
-        val transaction = fragmentManager.beginTransaction()
-        val equalizerFragment = EqualizerFragment.newInstance("MySwitch", "")
+    private fun openEqualizerFragment(transaction: FragmentTransaction) {
+        val equalizerFragment = EqualizerFragment.newInstance("MySwitch")
         /*equalizerFragment.setListener(object : OnEqualizerSave {
             override fun onSave(name: String) {
                 Toast.makeText(this@MainActivity, name, Toast.LENGTH_SHORT).show()
             }
         })*/
         transaction.add(R.id.fragment_container, equalizerFragment, EQUALIZER_FRAGMENT)
-        transaction.addToBackStack("")
-        transaction.commitAllowingStateLoss()
     }
 
-    private fun openRecordFragment() {
-        val fragmentManager = supportFragmentManager
-        val transaction = fragmentManager.beginTransaction()
+    private fun openRecordFragment(transaction: FragmentTransaction) {
         val recordFragment = RecordFragment.newInstance()
         transaction.add(R.id.fragment_container, recordFragment, RECORD_FRAGMENT)
-        transaction.addToBackStack("")
-        transaction.commitAllowingStateLoss()
     }
 
-    private fun openPlaybackFragment() {
-        val fragmentManager = supportFragmentManager
-        val transaction = fragmentManager.beginTransaction()
+    private fun openPlaybackFragment(transaction: FragmentTransaction) {
         val playbackFragment = PlaybackFragment.newInstance(Data(""))
         transaction.add(R.id.fragment_container, playbackFragment, PLAYBACK_FRAGMENT)
-        transaction.addToBackStack("")
-        transaction.commitAllowingStateLoss()
     }
 
     override fun getTrack(mp3: String) {
