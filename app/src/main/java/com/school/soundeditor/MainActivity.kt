@@ -15,7 +15,7 @@ import com.school.soundeditor.record.RecordFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSave {
+internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSave, OnExit {
 
     private val presenter: MainScreenPresenter = MainPresenter(this)
 
@@ -28,7 +28,6 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
     private fun initBottomNavigation() {
         var transaction = supportFragmentManager.beginTransaction()
         openMainFragment(transaction)
-        transaction.addToBackStack("")
         transaction.commitAllowingStateLoss()
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
             transaction = supportFragmentManager.beginTransaction()
@@ -48,18 +47,18 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
                 else -> {
                 }
             }
-            transaction.addToBackStack("")
             transaction.commitAllowingStateLoss()
             true
         }
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        if (supportFragmentManager.fragments.isEmpty()) {
-            finish()
-        }
-        when (getVisibleFragment()) {
+        ExitAppDialogFragment().show(supportFragmentManager, "")
+        //super.onBackPressed()
+        //if (supportFragmentManager.fragments.isEmpty()) {
+        //    finish()
+        //}
+        /*when (getVisibleFragment()) {
             is MainFragment -> bottomNavigation.menu.findItem(R.id.main_screen_item).isChecked =
                 true
             is EqualizerFragment -> bottomNavigation.menu.findItem(R.id.equalizer_item).isChecked =
@@ -68,7 +67,7 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
                 true
             is PlaybackFragment -> bottomNavigation.menu.findItem(R.id.to_playback_item).isChecked =
                 true
-        }
+        }*/
         /*
         val fragment = supportFragmentManager.findFragmentByTag(RECORD_FRAGMENT)
         if (supportFragmentManager.findFragmentByTag(RECORD_FRAGMENT) != null) {
@@ -88,7 +87,7 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
 
     private fun openMainFragment(transaction: FragmentTransaction) {
         val mainFragment = MainFragment.newInstance()
-        transaction.add(R.id.fragment_container, mainFragment, MAIN_FRAGMENT)
+        transaction.replace(R.id.fragment_container, mainFragment, MAIN_FRAGMENT)
     }
 
     private fun openEqualizerFragment(transaction: FragmentTransaction) {
@@ -98,17 +97,17 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
                 Toast.makeText(this@MainActivity, name, Toast.LENGTH_SHORT).show()
             }
         })*/
-        transaction.add(R.id.fragment_container, equalizerFragment, EQUALIZER_FRAGMENT)
+        transaction.replace(R.id.fragment_container, equalizerFragment, EQUALIZER_FRAGMENT)
     }
 
     private fun openRecordFragment(transaction: FragmentTransaction) {
         val recordFragment = RecordFragment.newInstance()
-        transaction.add(R.id.fragment_container, recordFragment, RECORD_FRAGMENT)
+        transaction.replace(R.id.fragment_container, recordFragment, RECORD_FRAGMENT)
     }
 
     private fun openPlaybackFragment(transaction: FragmentTransaction) {
         val playbackFragment = PlaybackFragment.newInstance(Data(""))
-        transaction.add(R.id.fragment_container, playbackFragment, PLAYBACK_FRAGMENT)
+        transaction.replace(R.id.fragment_container, playbackFragment, PLAYBACK_FRAGMENT)
     }
 
     override fun getTrack(mp3: String) {
@@ -125,6 +124,10 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
         if (fragment != null && fragment is EqualizerFragment) {
             fragment.showData(Data(name))
         }
+    }
+
+    override fun onExit() {
+        finish()
     }
 
     companion object {
