@@ -99,7 +99,17 @@
             android:src="@android:drawable/ic_menu_preferences" />
     </LinearLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topToolsMainScreen"
+        tools:listitem="@layout/item_layout" />
+
+    <!--<androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -117,67 +127,66 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+                                <FrameLayout
+                                    android:id="@+id/trackFrameLayout1"
+                                    android:layout_width="400dp"
+                                    android:layout_height="50dp"
+                                    android:layout_marginBottom="8dp"
+                                    android:background="#C8C8C8"
+                                    android:tag="here will be some tracks"
+                                    app:layout_constraintBottom_toTopOf="@+id/bottomToolBar"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
 
-                <FrameLayout
-                    android:id="@+id/trackFrameLayout1"
-                    android:layout_width="400dp"
-                    android:layout_height="50dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="#C8C8C8"
-                    android:tag="here will be some tracks"
-                    app:layout_constraintBottom_toTopOf="@+id/bottomToolBar"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                                <FrameLayout
+                                    android:id="@+id/trackFrameLayout2"
+                                    android:layout_width="400dp"
+                                    android:layout_height="50dp"
+                                    android:layout_marginBottom="8dp"
+                                    android:background="#C8C8C8"
+                                    android:tag="here will be some tracks"
+                                    app:layout_constraintBottom_toTopOf="@+id/bottomToolBar"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
 
-                <FrameLayout
-                    android:id="@+id/trackFrameLayout2"
-                    android:layout_width="400dp"
-                    android:layout_height="50dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="#C8C8C8"
-                    android:tag="here will be some tracks"
-                    app:layout_constraintBottom_toTopOf="@+id/bottomToolBar"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                                <FrameLayout
+                                    android:id="@+id/trackFrameLayout3"
+                                    android:layout_width="400dp"
+                                    android:layout_height="50dp"
+                                    android:layout_marginBottom="8dp"
+                                    android:background="#C8C8C8"
+                                    android:tag="here will be some tracks"
+                                    app:layout_constraintBottom_toTopOf="@+id/bottomToolBar"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
 
-                <FrameLayout
-                    android:id="@+id/trackFrameLayout3"
-                    android:layout_width="400dp"
-                    android:layout_height="50dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="#C8C8C8"
-                    android:tag="here will be some tracks"
-                    app:layout_constraintBottom_toTopOf="@+id/bottomToolBar"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                                <FrameLayout
+                                    android:id="@+id/trackFrameLayout4"
+                                    android:layout_width="400dp"
+                                    android:layout_height="50dp"
+                                    android:layout_marginBottom="8dp"
+                                    android:background="#C8C8C8"
+                                    android:tag="here will be some tracks"
+                                    app:layout_constraintBottom_toTopOf="@+id/bottomToolBar"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
 
-                <FrameLayout
-                    android:id="@+id/trackFrameLayout4"
-                    android:layout_width="400dp"
-                    android:layout_height="50dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="#C8C8C8"
-                    android:tag="here will be some tracks"
-                    app:layout_constraintBottom_toTopOf="@+id/bottomToolBar"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <FrameLayout
-                    android:id="@+id/trackFrameLayout5"
-                    android:layout_width="400dp"
-                    android:layout_height="50dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="#C8C8C8"
-                    android:tag="here will be some tracks"
-                    app:layout_constraintBottom_toTopOf="@+id/bottomToolBar"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                                <FrameLayout
+                                    android:id="@+id/trackFrameLayout5"
+                                    android:layout_width="400dp"
+                                    android:layout_height="50dp"
+                                    android:layout_marginBottom="8dp"
+                                    android:background="#C8C8C8"
+                                    android:tag="here will be some tracks"
+                                    app:layout_constraintBottom_toTopOf="@+id/bottomToolBar"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.appcompat.widget.LinearLayoutCompat>
         </HorizontalScrollView>
-    </androidx.core.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>-->
 </androidx.constraintlayout.widget.ConstraintLayout>

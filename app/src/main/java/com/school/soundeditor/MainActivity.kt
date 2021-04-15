@@ -14,6 +14,10 @@ import com.school.soundeditor.playback.PlaybackFragment
 import com.school.soundeditor.record.RecordFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
+/*по ДЗ:
+-Делай навигацию через replace без бэкстека, но перед закрытием приложения отображай диалоговое окно где пользователь будет выбирать: закрыть приложение или остаться
+-Разберись, как делать кастомные диалоги (см методичку)
+-Почитай про BottomSheet (см ссылки ниже)*/
 
 internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSave, OnExit {
 
