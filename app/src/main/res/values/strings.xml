@@ -20,6 +20,9 @@
     <string name="input_item">Вставка</string>
     <string name="track_item">Трек</string>
     <string name="effects_item">Эфф.</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="default_track_name">Bohemian Rhapsody</string>
+    <string name="default_track_duration">5:55</string>
+    <string name="default_track_format">Mp3</string>
+    <string name="default_track_performer">Queen</string>
+    <string name="track_image_description">here will be track image</string>
 </resources>

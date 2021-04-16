@@ -22,7 +22,27 @@ internal class MainFragment : Fragment(), MainScreenView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView.adapter = MyAdapter(listOf(1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0))
+        val dataList: MutableList<TrackData> = mutableListOf(
+            TrackData(
+                "Bohemian Rhapsody",
+                "Queen",
+                "5:55",
+                "Mp3",
+                R.drawable.bohemian
+            )
+        )
+        for (i in 1..9) {
+            dataList.add(
+                TrackData(
+                    "Test name №$i",
+                    "Test performer №$i",
+                    "$i:0$i",
+                    if (i % 2 == 0) "Mp3" else "Wav",
+                    R.drawable.sample_image
+                )
+            )
+        }
+        recyclerView.adapter = MyAdapter(dataList)
         /*for (i in 1..100) {
             //val textView = TextView(requireContext())
             val itemLayout:ConstraintLayout =

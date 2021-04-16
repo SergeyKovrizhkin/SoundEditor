@@ -3,11 +3,13 @@ package com.school.soundeditor.main
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.school.soundeditor.R
 
-class MyAdapter(private val data: List<Int>) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+class MyAdapter(private val data: List<TrackData>) :
+    RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -23,8 +25,14 @@ class MyAdapter(private val data: List<Int>) : RecyclerView.Adapter<MyAdapter.My
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun onBind(itemData: Int) {
-            itemView.findViewById<TextView>(R.id.text_view_item).text = "Дорожка №: $itemData"
+        fun onBind(itemData: TrackData) {
+            itemView.findViewById<TextView>(R.id.track_name_text_view).text = itemData.name
+            itemView.findViewById<TextView>(R.id.track_performer_text_view).text =
+                itemData.performer
+            itemView.findViewById<TextView>(R.id.track_duration_text_view).text =
+                itemData.duration
+            itemView.findViewById<TextView>(R.id.track_format_text_view).text = itemData.format
+            itemView.findViewById<ImageView>(R.id.track_image).setImageResource(itemData.image)
         }
     }
 }
