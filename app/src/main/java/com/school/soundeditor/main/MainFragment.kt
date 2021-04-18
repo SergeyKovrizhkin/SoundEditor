@@ -22,7 +22,17 @@ internal class MainFragment : Fragment(), MainScreenView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        recyclerView.adapter = MyAdapter(getTrackList(), object : MyAdapter.OnClickListener {
+            override fun onClick(itemData: TrackData) {
+                //Открыть в новом окне
+                Toast.makeText(requireContext(), itemData.name, Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun getTrackList(): MutableList<TrackData> {
         val dataList: MutableList<TrackData> = mutableListOf(
+            TrackData(),
             TrackData(
                 "Bohemian Rhapsody",
                 "Queen",
@@ -42,16 +52,7 @@ internal class MainFragment : Fragment(), MainScreenView {
                 )
             )
         }
-        recyclerView.adapter = MyAdapter(dataList)
-        /*for (i in 1..100) {
-            //val textView = TextView(requireContext())
-            val itemLayout:ConstraintLayout =
-                layoutInflater.inflate(R.layout.item_layout, tracksLinearLayout, false) as ConstraintLayout
-            val textView = itemLayout.findViewById<TextView>(R.id.text_view_item)
-            textView.text = "Дорожка №:Дорожка №:Дорожка №:Дорожка №:Дорожка №:Дорожка №: $i"
-            textView.textSize = 35f
-            tracksLinearLayout.addView(itemLayout)
-        }*/
+        return dataList
     }
 
     override fun getTrack(mp3: String) {
