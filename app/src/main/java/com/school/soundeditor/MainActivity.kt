@@ -3,13 +3,9 @@ package com.school.soundeditor
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.school.soundeditor.equalizer.EqualizerFragment
-import com.school.soundeditor.main.MainFragment
-import com.school.soundeditor.main.MainPresenter
-import com.school.soundeditor.main.MainScreenPresenter
-import com.school.soundeditor.main.MainScreenView
+import com.school.soundeditor.main.*
 import com.school.soundeditor.playback.PlaybackFragment
 import com.school.soundeditor.record.RecordFragment
 import kotlinx.android.synthetic.main.activity_main.*
@@ -46,7 +42,7 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
                     openRecordFragment(transaction)
                 }
                 R.id.to_playback_item -> {
-                    openPlaybackFragment(transaction)
+                    openPlaybackFragment(transaction, itemSelected)
                 }
                 else -> {
                 }
@@ -79,7 +75,7 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
         }*/
     }
 
-    private fun getVisibleFragment(): Fragment? {
+    /*private fun getVisibleFragment(): Fragment? {
         var visibleFragment: Fragment? = null
         supportFragmentManager.fragments.forEach {
             if (it.isVisible) {
@@ -87,10 +83,16 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
             }
         }
         return visibleFragment
-    }
+    }*/
 
     private fun openMainFragment(transaction: FragmentTransaction) {
         val mainFragment = MainFragment.newInstance()
+        mainFragment.setListener(object : ShowItemForPlayback {
+            override fun onShow(itemData: SuperRecyclerItemData) {
+                if (itemData is TrackData || itemData is MovieData)
+                    bottomNavigation.selectedItemId = R.id.to_playback_item
+            }
+        })
         transaction.replace(R.id.fragment_container, mainFragment, MAIN_FRAGMENT)
     }
 
@@ -109,8 +111,11 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
         transaction.replace(R.id.fragment_container, recordFragment, RECORD_FRAGMENT)
     }
 
-    private fun openPlaybackFragment(transaction: FragmentTransaction) {
-        val playbackFragment = PlaybackFragment.newInstance(Data(""))
+    private fun openPlaybackFragment(
+        transaction: FragmentTransaction,
+        itemData: SuperRecyclerItemData?
+    ) {
+        val playbackFragment = PlaybackFragment.newInstance(itemData)
         transaction.replace(R.id.fragment_container, playbackFragment, PLAYBACK_FRAGMENT)
     }
 
@@ -139,5 +144,7 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
         private const val EQUALIZER_FRAGMENT = "EQUALIZER_FRAGMENT"
         private const val RECORD_FRAGMENT = "RECORD_FRAGMENT"
         private const val PLAYBACK_FRAGMENT = "PLAYBACK_FRAGMENT"
+
+        var itemSelected: SuperRecyclerItemData? = null
     }
 }

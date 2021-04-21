@@ -4,10 +4,11 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class TrackData(
+data class MovieData(
     val name: String = "",
-    val performer: String = "",
+    val producer: String = "",
     val duration: String = "",
     val format: String = "",
-    val image: Int = 0
+    val image: Int = 0,
+    val starring: String = ""
 ) : Parcelable, SuperRecyclerItemData()

@@ -6,13 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.school.soundeditor.Data
 import com.school.soundeditor.R
+import com.school.soundeditor.main.MovieData
+import com.school.soundeditor.main.SuperRecyclerItemData
+import com.school.soundeditor.main.TrackData
+import kotlinx.android.synthetic.main.fragment_playback.*
 
 internal class PlaybackFragment : Fragment(), PlaybackScreenView {
 
     private val presenter: PlaybackScreenPresenter = PlaybackPresenter(this)
-    private var param1: Data? = null
+    private var param1: SuperRecyclerItemData? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,6 +28,26 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
             param1 = it.getParcelable(ARG_PARAM1)
+        }
+        when (param1) {
+            is TrackData -> {
+                item_image.setImageResource((param1 as TrackData).image)
+                ("""${(param1 as TrackData).name}
+${(param1 as TrackData).performer}
+${(param1 as TrackData).duration}
+${(param1 as TrackData).format}""").also { item_data_text_view.text = it }
+            }
+            is MovieData -> {
+                item_image.setImageResource((param1 as MovieData).image)
+                """${(param1 as MovieData).name}
+${(param1 as MovieData).producer}
+${(param1 as MovieData).duration}
+${(param1 as MovieData).format}
+Starring:
+${(param1 as MovieData).starring}""".also { item_data_text_view.text = it }
+            }
+            else -> {
+            }
         }
     }
 
@@ -41,7 +64,7 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
         private const val ARG_PARAM1 = "param1"
 
         @JvmStatic
-        fun newInstance(param1: Data) =
+        fun newInstance(param1: SuperRecyclerItemData?) =
             PlaybackFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_PARAM1, param1)

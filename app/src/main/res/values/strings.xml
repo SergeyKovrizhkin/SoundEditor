@@ -25,4 +25,14 @@
     <string name="default_track_format">Mp3</string>
     <string name="default_track_performer">Queen</string>
     <string name="track_image_description">here will be track image</string>
+    <string name="footer_text">End of list</string>
+    <string name="header_text">List of different types</string>
+    <string name="movie_image_description">here will be movie image</string>
+    <string name="default_movie_name">Modern Times</string>
+    <string name="default_movie_producer">Charlie Chaplin</string>
+    <string name="default_movie_duration">87 min</string>
+    <string name="default_movie_format">avi</string>
+    <string name="starring_text_header">Starring:</string>
+    <string name="starring_text">Charles Chaplin\nPaulette Goddard</string>
+    <string name="item_image_description">here will be item image</string>
 </resources>

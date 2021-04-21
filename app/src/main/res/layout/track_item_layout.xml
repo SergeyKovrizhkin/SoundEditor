@@ -9,46 +9,42 @@
         android:id="@+id/track_name_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:text="@string/default_track_name"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/track_performer_text_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
-        app:layout_constraintStart_toEndOf="@id/track_image"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/track_performer_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:text="@string/default_track_performer"
         android:textStyle="italic"
         app:layout_constraintBottom_toTopOf="@id/track_duration_text_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
-        app:layout_constraintStart_toEndOf="@id/track_image"
         app:layout_constraintTop_toBottomOf="@id/track_name_text_view" />
 
     <TextView
         android:id="@+id/track_duration_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:text="@string/default_track_duration"
         app:layout_constraintBottom_toTopOf="@id/track_format_text_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
-        app:layout_constraintStart_toEndOf="@id/track_image"
         app:layout_constraintTop_toBottomOf="@id/track_performer_text_view" />
 
     <TextView
         android:id="@+id/track_format_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:text="@string/default_track_format"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
-        app:layout_constraintStart_toEndOf="@id/track_image"
         app:layout_constraintTop_toBottomOf="@id/track_duration_text_view" />
 
     <ImageView
@@ -59,13 +55,4 @@
         android:src="@drawable/bohemian"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_marginTop="5dp"
-        android:background="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/track_image" />
 </androidx.constraintlayout.widget.ConstraintLayout>

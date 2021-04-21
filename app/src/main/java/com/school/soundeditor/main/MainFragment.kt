@@ -6,12 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.school.soundeditor.MainActivity
 import com.school.soundeditor.R
+import com.school.soundeditor.ShowItemForPlayback
 import kotlinx.android.synthetic.main.fragment_main.*
 
 internal class MainFragment : Fragment(), MainScreenView {
 
     private val presenter: MainScreenPresenter = MainPresenter(this)
+    private var listener: ShowItemForPlayback? = null
+
+    fun setListener(listener: ShowItemForPlayback) {
+        this.listener = listener
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,35 +32,61 @@ internal class MainFragment : Fragment(), MainScreenView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.adapter = MyAdapter(getTrackList(), object : MyAdapter.OnClickListener {
-            override fun onClick(itemData: TrackData) {
-                //Открыть в новом окне
-                Toast.makeText(requireContext(), itemData.name, Toast.LENGTH_SHORT).show()
+            override fun onClick(itemData: SuperRecyclerItemData) {
+                MainActivity.itemSelected = itemData
+                listener?.onShow(itemData)
             }
         })
+        recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                requireContext(),
+                LinearLayoutManager.VERTICAL
+            )
+        )
     }
 
-    private fun getTrackList(): MutableList<TrackData> {
-        val dataList: MutableList<TrackData> = mutableListOf(
-            TrackData(),
+    private fun getTrackList(): MutableList<SuperRecyclerItemData> {
+        val dataList: MutableList<SuperRecyclerItemData> = mutableListOf(
+            HeaderData(),
             TrackData(
                 "Bohemian Rhapsody",
                 "Queen",
                 "5:55",
                 "Mp3",
                 R.drawable.bohemian
+            ),
+            MovieData(
+                "Modern Times",
+                "Charlie Chaplin",
+                "87 min",
+                "avi",
+                R.drawable.moderntimes,
+                "Charles Chaplin\nPaulette Goddard"
             )
         )
         for (i in 1..9) {
             dataList.add(
-                TrackData(
-                    "Test name №$i",
-                    "Test performer №$i",
-                    "$i:0$i",
-                    if (i % 2 == 0) "Mp3" else "Wav",
-                    R.drawable.sample_image
-                )
+                if (i % 3 != 0) {
+                    TrackData(
+                        "Test name №$i",
+                        "Test performer №$i",
+                        "$i:0$i",
+                        if (i % 2 == 0) "Mp3" else "Wav",
+                        R.drawable.sample_image
+                    )
+                } else {
+                    MovieData(
+                        "Test name №$i",
+                        "Test producer №$i",
+                        "${i * 20} min",
+                        if (i % 2 == 0) "avi" else "mp4",
+                        R.drawable.defaultmovie,
+                        "Test actor №$i\nTest actress №$i"
+                    )
+                }
             )
         }
+        dataList.add(FooterData())
         return dataList
     }
 
@@ -64,7 +99,6 @@ internal class MainFragment : Fragment(), MainScreenView {
     }
 
     companion object {
-
         @JvmStatic
         fun newInstance() = MainFragment()
     }

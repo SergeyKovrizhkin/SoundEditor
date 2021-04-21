@@ -30,13 +30,24 @@
             android:src="@android:drawable/ic_menu_preferences" />
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/trackFrameLayout"
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/item_image"
+        android:layout_width="250dp"
         android:layout_height="250dp"
-        android:background="#C8C8C8"
-        app:layout_constraintBottom_toTopOf="@+id/bottomToolsPlaybackScreen"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/item_image_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/item_data_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:gravity="center"
+        android:text=""
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_image" />
 </androidx.constraintlayout.widget.ConstraintLayout>
