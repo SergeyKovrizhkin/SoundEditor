@@ -10,7 +10,10 @@ import com.school.soundeditor.R
 
 //class vs inner class
 
-class MyAdapter(private val data: List<SuperRecyclerItemData>, val listener: OnClickListener) :
+class MyAdapter(
+    private val data: MutableList<SuperRecyclerItemData>,
+    val listener: OnClickListener
+) :
     RecyclerView.Adapter<BaseViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
@@ -53,6 +56,11 @@ class MyAdapter(private val data: List<SuperRecyclerItemData>, val listener: OnC
         }
     }
 
+    fun addListItem(listItem: SuperRecyclerItemData) {
+        data.add(data.size - 1, listItem)
+        notifyDataSetChanged()
+    }
+
     inner class HeaderViewHolder(itemView: View) : BaseViewHolder(itemView) {
         override fun onBind(itemData: SuperRecyclerItemData) {
             itemView.setOnClickListener {
@@ -74,6 +82,48 @@ class MyAdapter(private val data: List<SuperRecyclerItemData>, val listener: OnC
                 itemData.duration
             itemView.findViewById<TextView>(R.id.track_format_text_view).text = itemData.format
             itemView.findViewById<ImageView>(R.id.track_image).setImageResource(itemData.image)
+            /*itemView.findViewById<ImageView>(R.id.add_button).setOnClickListener {
+                data.add(layoutPosition, getListItem())
+                notifyItemInserted(layoutPosition + 1)
+            }
+            itemView.findViewById<ImageView>(R.id.remove_button).setOnClickListener {
+                data.removeAt(layoutPosition)
+                notifyItemRemoved(layoutPosition)
+            }*/
+            itemView.findViewById<ImageView>(R.id.add_button).setOnClickListener {
+                moveUp()
+            }
+            itemView.findViewById<ImageView>(R.id.remove_button).setOnClickListener {
+                moveDown()
+            }
+        }
+
+        private fun moveUp() {
+            layoutPosition.takeIf { it > 1 }?.also { currentPosition ->
+                val element = data[currentPosition]
+                data.removeAt(currentPosition)
+                data.add(currentPosition - 1, element)
+                notifyItemMoved(currentPosition, currentPosition - 1)
+            }
+        }
+
+        private fun moveDown() {
+            layoutPosition.takeIf { it < data.size - 2 }?.also { currentPosition ->
+                val element = data[currentPosition]
+                data.removeAt(currentPosition)
+                data.add(currentPosition + 1, element)
+                notifyItemMoved(currentPosition, currentPosition + 1)
+            }
+        }
+
+        private fun getListItem(): SuperRecyclerItemData {
+            return TrackData(
+                "Bohemian Rhapsody",
+                "Queen",
+                "5:55",
+                "Mp3",
+                R.drawable.bohemian
+            )
         }
     }
 

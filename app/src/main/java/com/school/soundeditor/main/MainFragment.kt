@@ -31,17 +31,34 @@ internal class MainFragment : Fragment(), MainScreenView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView.adapter = MyAdapter(getTrackList(), object : MyAdapter.OnClickListener {
+
+        val adapter = MyAdapter(getTrackList(), object : MyAdapter.OnClickListener {
             override fun onClick(itemData: SuperRecyclerItemData) {
                 MainActivity.itemSelected = itemData
                 listener?.onShow(itemData)
             }
         })
+
+        recyclerView.adapter = adapter
         recyclerView.addItemDecoration(
             DividerItemDecoration(
                 requireContext(),
                 LinearLayoutManager.VERTICAL
             )
+        )
+
+        add_button.setOnClickListener {
+            adapter.addListItem(getListItem())
+        }
+    }
+
+    private fun getListItem(): SuperRecyclerItemData {
+        return TrackData(
+            "Bohemian Rhapsody",
+            "Queen",
+            "5:55",
+            "Mp3",
+            R.drawable.bohemian
         )
     }
 
@@ -64,7 +81,7 @@ internal class MainFragment : Fragment(), MainScreenView {
                 "Charles Chaplin\nPaulette Goddard"
             )
         )
-        for (i in 1..9) {
+        /*for (i in 1..9) {
             dataList.add(
                 if (i % 3 != 0) {
                     TrackData(
@@ -85,7 +102,7 @@ internal class MainFragment : Fragment(), MainScreenView {
                     )
                 }
             )
-        }
+        }*/
         dataList.add(FooterData())
         return dataList
     }

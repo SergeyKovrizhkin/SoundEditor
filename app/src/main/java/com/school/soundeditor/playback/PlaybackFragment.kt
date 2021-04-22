@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.school.soundeditor.R
@@ -26,25 +28,34 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val movieLayout = layoutInflater.inflate(R.layout.movie_item_layout, null)
+
         arguments?.let {
             param1 = it.getParcelable(ARG_PARAM1)
         }
         when (param1) {
             is TrackData -> {
-                item_image.setImageResource((param1 as TrackData).image)
-                ("""${(param1 as TrackData).name}
-${(param1 as TrackData).performer}
-${(param1 as TrackData).duration}
-${(param1 as TrackData).format}""").also { item_data_text_view.text = it }
+                val data = param1 as TrackData
+                movieLayout.findViewById<ImageView>(R.id.movie_image).setImageResource(data.image)
+                movieLayout.findViewById<TextView>(R.id.movie_name_text_view).text = data.name
+                container.addView(movieLayout)
+
+                /*item_image.setImageResource(data.image)
+                ("""${(data).name}${(data).performer}${(data).duration}${(data).format}""").also {
+                    item_data_text_view.text = it
+                }*/
             }
             is MovieData -> {
-                item_image.setImageResource((param1 as MovieData).image)
+
+
+                /*item_image.setImageResource((param1 as MovieData).image)
                 """${(param1 as MovieData).name}
 ${(param1 as MovieData).producer}
 ${(param1 as MovieData).duration}
 ${(param1 as MovieData).format}
 Starring:
-${(param1 as MovieData).starring}""".also { item_data_text_view.text = it }
+${(param1 as MovieData).starring}""".also { item_data_text_view.text = it }*/
             }
             else -> {
             }
