@@ -28,34 +28,41 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val movieLayout = layoutInflater.inflate(R.layout.movie_item_layout, null)
-
         arguments?.let {
             param1 = it.getParcelable(ARG_PARAM1)
         }
         when (param1) {
             is TrackData -> {
+                container.removeAllViewsInLayout()
+                val trackDetailLayout = layoutInflater.inflate(R.layout.track_detail_layout, null)
                 val data = param1 as TrackData
-                movieLayout.findViewById<ImageView>(R.id.movie_image).setImageResource(data.image)
-                movieLayout.findViewById<TextView>(R.id.movie_name_text_view).text = data.name
-                container.addView(movieLayout)
-
-                /*item_image.setImageResource(data.image)
-                ("""${(data).name}${(data).performer}${(data).duration}${(data).format}""").also {
-                    item_data_text_view.text = it
-                }*/
+                trackDetailLayout.findViewById<ImageView>(R.id.track_image)
+                    .setImageResource(data.image)
+                trackDetailLayout.findViewById<TextView>(R.id.track_name_text_view).text = data.name
+                trackDetailLayout.findViewById<TextView>(R.id.track_performer_text_view).text =
+                    data.performer
+                trackDetailLayout.findViewById<TextView>(R.id.track_duration_text_view).text =
+                    data.duration
+                trackDetailLayout.findViewById<TextView>(R.id.track_format_text_view).text =
+                    data.format
+                container.addView(trackDetailLayout)
             }
             is MovieData -> {
-
-
-                /*item_image.setImageResource((param1 as MovieData).image)
-                """${(param1 as MovieData).name}
-${(param1 as MovieData).producer}
-${(param1 as MovieData).duration}
-${(param1 as MovieData).format}
-Starring:
-${(param1 as MovieData).starring}""".also { item_data_text_view.text = it }*/
+                container.removeAllViewsInLayout()
+                val movieDetailLayout = layoutInflater.inflate(R.layout.movie_detail_layout, null)
+                val data = param1 as MovieData
+                movieDetailLayout.findViewById<ImageView>(R.id.movie_image)
+                    .setImageResource(data.image)
+                movieDetailLayout.findViewById<TextView>(R.id.movie_name_text_view).text = data.name
+                movieDetailLayout.findViewById<TextView>(R.id.movie_producer_text_view).text =
+                    data.producer
+                movieDetailLayout.findViewById<TextView>(R.id.movie_duration_text_view).text =
+                    data.duration
+                movieDetailLayout.findViewById<TextView>(R.id.movie_format_text_view).text =
+                    data.format
+                movieDetailLayout.findViewById<TextView>(R.id.starring_text_view).text =
+                    data.starring
+                container.addView(movieDetailLayout)
             }
             else -> {
             }

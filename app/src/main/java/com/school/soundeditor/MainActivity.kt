@@ -27,13 +27,13 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
 
     private fun initBottomNavigation() {
         var transaction = supportFragmentManager.beginTransaction()
-        openMainFragment(transaction)
+        openMainFragment(transaction, null)
         transaction.commitAllowingStateLoss()
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
             transaction = supportFragmentManager.beginTransaction()
             when (item.itemId) {
                 R.id.main_screen_item -> {
-                    openMainFragment(transaction)
+                    openMainFragment(transaction, dataList)
                 }
                 R.id.equalizer_item -> {
                     openEqualizerFragment(transaction)
@@ -85,8 +85,11 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
         return visibleFragment
     }*/
 
-    private fun openMainFragment(transaction: FragmentTransaction) {
-        val mainFragment = MainFragment.newInstance()
+    private fun openMainFragment(
+        transaction: FragmentTransaction,
+        dataList: RecyclerSavedListData?
+    ) {
+        val mainFragment = MainFragment.newInstance(dataList)
         mainFragment.setListener(object : ShowItemForPlayback {
             override fun onShow(itemData: SuperRecyclerItemData) {
                 if (itemData is TrackData || itemData is MovieData)
@@ -146,5 +149,6 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
         private const val PLAYBACK_FRAGMENT = "PLAYBACK_FRAGMENT"
 
         var itemSelected: SuperRecyclerItemData? = null
+        var dataList: RecyclerSavedListData? = null
     }
 }

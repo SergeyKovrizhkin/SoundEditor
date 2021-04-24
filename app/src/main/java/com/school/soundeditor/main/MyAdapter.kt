@@ -6,12 +6,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.school.soundeditor.MainActivity
 import com.school.soundeditor.R
+import com.school.soundeditor.RecyclerSavedListData
 
 //class vs inner class
 
 class MyAdapter(
-    private val data: MutableList<SuperRecyclerItemData>,
+    val dataList: RecyclerSavedListData,
     val listener: OnClickListener
 ) :
     RecyclerView.Adapter<BaseViewHolder>() {
@@ -42,13 +44,13 @@ class MyAdapter(
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
-        holder.onBind(data[position])
+        holder.onBind(dataList.data[position])
     }
 
-    override fun getItemCount() = data.size
+    override fun getItemCount() = dataList.data.size
 
     override fun getItemViewType(position: Int): Int {
-        return when (data[position]) {
+        return when (dataList.data[position]) {
             is HeaderData -> TYPE_HEADER
             is TrackData -> TYPE_TRACK
             is MovieData -> TYPE_MOVIE
@@ -57,8 +59,10 @@ class MyAdapter(
     }
 
     fun addListItem(listItem: SuperRecyclerItemData) {
-        data.add(data.size - 1, listItem)
+        dataList.data.add(dataList.data.size - 1, listItem)
         notifyDataSetChanged()
+        MainActivity.dataList = dataList
+
     }
 
     inner class HeaderViewHolder(itemView: View) : BaseViewHolder(itemView) {
@@ -82,41 +86,45 @@ class MyAdapter(
                 itemData.duration
             itemView.findViewById<TextView>(R.id.track_format_text_view).text = itemData.format
             itemView.findViewById<ImageView>(R.id.track_image).setImageResource(itemData.image)
-            /*itemView.findViewById<ImageView>(R.id.add_button).setOnClickListener {
-                data.add(layoutPosition, getListItem())
+            itemView.findViewById<ImageView>(R.id.add_button).setOnClickListener {
+                dataList.data.add(layoutPosition, getNewTrackItem())
                 notifyItemInserted(layoutPosition + 1)
+                MainActivity.dataList = dataList
             }
             itemView.findViewById<ImageView>(R.id.remove_button).setOnClickListener {
-                data.removeAt(layoutPosition)
+                dataList.data.removeAt(layoutPosition)
                 notifyItemRemoved(layoutPosition)
-            }*/
-            itemView.findViewById<ImageView>(R.id.add_button).setOnClickListener {
+                MainActivity.dataList = dataList
+            }
+            itemView.findViewById<ImageView>(R.id.move_up_button).setOnClickListener {
                 moveUp()
             }
-            itemView.findViewById<ImageView>(R.id.remove_button).setOnClickListener {
+            itemView.findViewById<ImageView>(R.id.move_down_button).setOnClickListener {
                 moveDown()
             }
         }
 
         private fun moveUp() {
             layoutPosition.takeIf { it > 1 }?.also { currentPosition ->
-                val element = data[currentPosition]
-                data.removeAt(currentPosition)
-                data.add(currentPosition - 1, element)
+                val element = dataList.data[currentPosition]
+                dataList.data.removeAt(currentPosition)
+                dataList.data.add(currentPosition - 1, element)
                 notifyItemMoved(currentPosition, currentPosition - 1)
+                MainActivity.dataList = dataList
             }
         }
 
         private fun moveDown() {
-            layoutPosition.takeIf { it < data.size - 2 }?.also { currentPosition ->
-                val element = data[currentPosition]
-                data.removeAt(currentPosition)
-                data.add(currentPosition + 1, element)
+            layoutPosition.takeIf { it < dataList.data.size - 2 }?.also { currentPosition ->
+                val element = dataList.data[currentPosition]
+                dataList.data.removeAt(currentPosition)
+                dataList.data.add(currentPosition + 1, element)
                 notifyItemMoved(currentPosition, currentPosition + 1)
+                MainActivity.dataList = dataList
             }
         }
 
-        private fun getListItem(): SuperRecyclerItemData {
+        private fun getNewTrackItem(): SuperRecyclerItemData {
             return TrackData(
                 "Bohemian Rhapsody",
                 "Queen",
@@ -141,6 +149,53 @@ class MyAdapter(
             itemView.findViewById<TextView>(R.id.movie_format_text_view).text = itemData.format
             itemView.findViewById<ImageView>(R.id.movie_image).setImageResource(itemData.image)
             itemView.findViewById<TextView>(R.id.starring_text_view).text = itemData.starring
+            itemView.findViewById<ImageView>(R.id.add_button).setOnClickListener {
+                dataList.data.add(layoutPosition, getNewMovieItem())
+                notifyItemInserted(layoutPosition + 1)
+                MainActivity.dataList = dataList
+            }
+            itemView.findViewById<ImageView>(R.id.remove_button).setOnClickListener {
+                dataList.data.removeAt(layoutPosition)
+                notifyItemRemoved(layoutPosition)
+                MainActivity.dataList = dataList
+            }
+            itemView.findViewById<ImageView>(R.id.move_up_button).setOnClickListener {
+                moveUp()
+            }
+            itemView.findViewById<ImageView>(R.id.move_down_button).setOnClickListener {
+                moveDown()
+            }
+        }
+
+        private fun getNewMovieItem(): SuperRecyclerItemData {
+            return MovieData(
+                "Modern Times",
+                "Charlie Chaplin",
+                "87 min",
+                "avi",
+                R.drawable.moderntimes,
+                "Charles Chaplin\nPaulette Goddard"
+            )
+        }
+
+        private fun moveUp() {
+            layoutPosition.takeIf { it > 1 }?.also { currentPosition ->
+                val element = dataList.data[currentPosition]
+                dataList.data.removeAt(currentPosition)
+                dataList.data.add(currentPosition - 1, element)
+                notifyItemMoved(currentPosition, currentPosition - 1)
+                MainActivity.dataList = dataList
+            }
+        }
+
+        private fun moveDown() {
+            layoutPosition.takeIf { it < dataList.data.size - 2 }?.also { currentPosition ->
+                val element = dataList.data[currentPosition]
+                dataList.data.removeAt(currentPosition)
+                dataList.data.add(currentPosition + 1, element)
+                notifyItemMoved(currentPosition, currentPosition + 1)
+                MainActivity.dataList = dataList
+            }
         }
     }
 

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.school.soundeditor.MainActivity
 import com.school.soundeditor.R
+import com.school.soundeditor.RecyclerSavedListData
 import com.school.soundeditor.ShowItemForPlayback
 import kotlinx.android.synthetic.main.fragment_main.*
 
@@ -17,6 +18,8 @@ internal class MainFragment : Fragment(), MainScreenView {
 
     private val presenter: MainScreenPresenter = MainPresenter(this)
     private var listener: ShowItemForPlayback? = null
+    private var dataList: RecyclerSavedListData? = null
+
 
     fun setListener(listener: ShowItemForPlayback) {
         this.listener = listener
@@ -31,14 +34,15 @@ internal class MainFragment : Fragment(), MainScreenView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val adapter = MyAdapter(getTrackList(), object : MyAdapter.OnClickListener {
+        arguments?.let {
+            dataList = it.getParcelable(ARG_PARAM1)
+        }
+        val adapter = MyAdapter(dataList ?: getTrackList(), object : MyAdapter.OnClickListener {
             override fun onClick(itemData: SuperRecyclerItemData) {
                 MainActivity.itemSelected = itemData
                 listener?.onShow(itemData)
             }
         })
-
         recyclerView.adapter = adapter
         recyclerView.addItemDecoration(
             DividerItemDecoration(
@@ -46,7 +50,6 @@ internal class MainFragment : Fragment(), MainScreenView {
                 LinearLayoutManager.VERTICAL
             )
         )
-
         add_button.setOnClickListener {
             adapter.addListItem(getListItem())
         }
@@ -62,8 +65,8 @@ internal class MainFragment : Fragment(), MainScreenView {
         )
     }
 
-    private fun getTrackList(): MutableList<SuperRecyclerItemData> {
-        val dataList: MutableList<SuperRecyclerItemData> = mutableListOf(
+    private fun getTrackList(): RecyclerSavedListData {
+        val data: MutableList<SuperRecyclerItemData> = mutableListOf(
             HeaderData(),
             TrackData(
                 "Bohemian Rhapsody",
@@ -81,29 +84,9 @@ internal class MainFragment : Fragment(), MainScreenView {
                 "Charles Chaplin\nPaulette Goddard"
             )
         )
-        /*for (i in 1..9) {
-            dataList.add(
-                if (i % 3 != 0) {
-                    TrackData(
-                        "Test name №$i",
-                        "Test performer №$i",
-                        "$i:0$i",
-                        if (i % 2 == 0) "Mp3" else "Wav",
-                        R.drawable.sample_image
-                    )
-                } else {
-                    MovieData(
-                        "Test name №$i",
-                        "Test producer №$i",
-                        "${i * 20} min",
-                        if (i % 2 == 0) "avi" else "mp4",
-                        R.drawable.defaultmovie,
-                        "Test actor №$i\nTest actress №$i"
-                    )
-                }
-            )
-        }*/
-        dataList.add(FooterData())
+        data.add(FooterData())
+        val dataList = RecyclerSavedListData()
+        dataList.data = data
         return dataList
     }
 
@@ -116,7 +99,15 @@ internal class MainFragment : Fragment(), MainScreenView {
     }
 
     companion object {
+
+        private const val ARG_PARAM1 = "param1"
+
         @JvmStatic
-        fun newInstance() = MainFragment()
+        fun newInstance(dataList: RecyclerSavedListData?) =
+            MainFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(ARG_PARAM1, dataList)
+                }
+            }
     }
 }

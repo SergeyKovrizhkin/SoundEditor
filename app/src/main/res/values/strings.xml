@@ -35,4 +35,7 @@
     <string name="starring_text_header">Starring:</string>
     <string name="starring_text">Charles Chaplin\nPaulette Goddard</string>
     <string name="item_image_description">here will be item image</string>
+    <string name="move_up_description">move up</string>
+    <string name="move_down_description">move down</string>
+    <string name="remove_description">remove</string>
 </resources>
