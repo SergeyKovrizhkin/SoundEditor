@@ -19,10 +19,21 @@ internal class MainFragment : Fragment(), MainScreenView {
     private val presenter: MainScreenPresenter = MainPresenter(this)
     private var listener: ShowItemForPlayback? = null
     private var dataList: RecyclerSavedListData? = null
-
+    private var onSaveData: OnSaveData? = null
+/*
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        onSaveData = context as OnSaveData
+    }*/
 
     fun setListener(listener: ShowItemForPlayback) {
         this.listener = listener
+    }
+
+    override fun onDetach() {
+        listener = null
+        onSaveData = null
+        super.onDetach()
     }
 
     override fun onCreateView(
@@ -30,6 +41,10 @@ internal class MainFragment : Fragment(), MainScreenView {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_main, container, false)
+    }
+
+    internal fun setOnSaveDataListener(onSaveData: OnSaveData) {
+        this.onSaveData = onSaveData
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,6 +56,12 @@ internal class MainFragment : Fragment(), MainScreenView {
             override fun onClick(itemData: SuperRecyclerItemData) {
                 MainActivity.itemSelected = itemData
                 listener?.onShow(itemData)
+            }
+        }, object : MyAdapter.OnSaveDataList {
+            override fun onSaveData(dataList: RecyclerSavedListData) {
+                val activity = activity as MainActivity
+                //activity.onSaveData(dataList)
+                onSaveData?.onSave(dataList)
             }
         })
         recyclerView.adapter = adapter

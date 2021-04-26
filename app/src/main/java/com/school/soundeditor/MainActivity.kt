@@ -10,14 +10,17 @@ import com.school.soundeditor.playback.PlaybackFragment
 import com.school.soundeditor.record.RecordFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
+
 /*по ДЗ:
 -Делай навигацию через replace без бэкстека, но перед закрытием приложения отображай диалоговое окно где пользователь будет выбирать: закрыть приложение или остаться
 -Разберись, как делать кастомные диалоги (см методичку)
 -Почитай про BottomSheet (см ссылки ниже)*/
 
-internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSave, OnExit {
+internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSave, OnExit,
+    OnSaveData {
 
     private val presenter: MainScreenPresenter = MainPresenter(this)
+    private var dataList: RecyclerSavedListData = RecyclerSavedListData()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,6 +99,11 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
                     bottomNavigation.selectedItemId = R.id.to_playback_item
             }
         })
+        mainFragment.setOnSaveDataListener(object : OnSaveData {
+            override fun onSave(dataList: RecyclerSavedListData) {
+                this@MainActivity.dataList = dataList
+            }
+        })
         transaction.replace(R.id.fragment_container, mainFragment, MAIN_FRAGMENT)
     }
 
@@ -142,6 +150,14 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
         finish()
     }
 
+    internal fun onSaveData(dataList: RecyclerSavedListData) {
+
+    }
+
+    override fun onSave(dataList: RecyclerSavedListData) {
+        TODO("Not yet implemented")
+    }
+
     companion object {
         private const val MAIN_FRAGMENT = "MAIN_FRAGMENT"
         private const val EQUALIZER_FRAGMENT = "EQUALIZER_FRAGMENT"
@@ -149,6 +165,5 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
         private const val PLAYBACK_FRAGMENT = "PLAYBACK_FRAGMENT"
 
         var itemSelected: SuperRecyclerItemData? = null
-        var dataList: RecyclerSavedListData? = null
     }
 }
