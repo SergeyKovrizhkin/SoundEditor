@@ -10,17 +10,12 @@ import com.school.soundeditor.playback.PlaybackFragment
 import com.school.soundeditor.record.RecordFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
+internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSave, OnExit {
 
-/*по ДЗ:
--Делай навигацию через replace без бэкстека, но перед закрытием приложения отображай диалоговое окно где пользователь будет выбирать: закрыть приложение или остаться
--Разберись, как делать кастомные диалоги (см методичку)
--Почитай про BottomSheet (см ссылки ниже)*/
-
-internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSave, OnExit,
-    OnSaveData {
-
-    private val presenter: MainScreenPresenter = MainPresenter(this)
-    private var dataList: RecyclerSavedListData = RecyclerSavedListData()
+    private val presenter = MainPresenter(this)
+    private var dataList = RecyclerSavedListData()
+    private var savedScrollingPosition = 0
+    private var itemSelected: SuperRecyclerItemData? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,13 +25,13 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
 
     private fun initBottomNavigation() {
         var transaction = supportFragmentManager.beginTransaction()
-        openMainFragment(transaction, null)
+        openMainFragment(transaction, null, savedScrollingPosition)
         transaction.commitAllowingStateLoss()
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
             transaction = supportFragmentManager.beginTransaction()
             when (item.itemId) {
                 R.id.main_screen_item -> {
-                    openMainFragment(transaction, dataList)
+                    openMainFragment(transaction, dataList, savedScrollingPosition)
                 }
                 R.id.equalizer_item -> {
                     openEqualizerFragment(transaction)
@@ -57,25 +52,6 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
 
     override fun onBackPressed() {
         ExitAppDialogFragment().show(supportFragmentManager, "")
-        //super.onBackPressed()
-        //if (supportFragmentManager.fragments.isEmpty()) {
-        //    finish()
-        //}
-        /*when (getVisibleFragment()) {
-            is MainFragment -> bottomNavigation.menu.findItem(R.id.main_screen_item).isChecked =
-                true
-            is EqualizerFragment -> bottomNavigation.menu.findItem(R.id.equalizer_item).isChecked =
-                true
-            is RecordFragment -> bottomNavigation.menu.findItem(R.id.to_record_item).isChecked =
-                true
-            is PlaybackFragment -> bottomNavigation.menu.findItem(R.id.to_playback_item).isChecked =
-                true
-        }*/
-        /*
-        val fragment = supportFragmentManager.findFragmentByTag(RECORD_FRAGMENT)
-        if (supportFragmentManager.findFragmentByTag(RECORD_FRAGMENT) != null) {
-            finish()
-        }*/
     }
 
     /*private fun getVisibleFragment(): Fragment? {
@@ -90,18 +66,26 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
 
     private fun openMainFragment(
         transaction: FragmentTransaction,
-        dataList: RecyclerSavedListData?
+        dataList: RecyclerSavedListData?,
+        savedScrollingPosition: Int
     ) {
-        val mainFragment = MainFragment.newInstance(dataList)
+        val mainFragment = MainFragment.newInstance(dataList, savedScrollingPosition)
         mainFragment.setListener(object : ShowItemForPlayback {
             override fun onShow(itemData: SuperRecyclerItemData) {
-                if (itemData is TrackData || itemData is MovieData)
+                if (itemData is TrackData || itemData is MovieData) {
+                    this@MainActivity.itemSelected = itemData
                     bottomNavigation.selectedItemId = R.id.to_playback_item
+                }
             }
         })
         mainFragment.setOnSaveDataListener(object : OnSaveData {
             override fun onSave(dataList: RecyclerSavedListData) {
                 this@MainActivity.dataList = dataList
+            }
+        })
+        mainFragment.setOnSaveScrollingPositionListener(object : OnSaveScrollingPosition {
+            override fun onSaveScrollingPosition(savedScrollingPosition: Int) {
+                this@MainActivity.savedScrollingPosition = savedScrollingPosition
             }
         })
         transaction.replace(R.id.fragment_container, mainFragment, MAIN_FRAGMENT)
@@ -150,20 +134,10 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
         finish()
     }
 
-    internal fun onSaveData(dataList: RecyclerSavedListData) {
-
-    }
-
-    override fun onSave(dataList: RecyclerSavedListData) {
-        TODO("Not yet implemented")
-    }
-
     companion object {
         private const val MAIN_FRAGMENT = "MAIN_FRAGMENT"
         private const val EQUALIZER_FRAGMENT = "EQUALIZER_FRAGMENT"
         private const val RECORD_FRAGMENT = "RECORD_FRAGMENT"
         private const val PLAYBACK_FRAGMENT = "PLAYBACK_FRAGMENT"
-
-        var itemSelected: SuperRecyclerItemData? = null
     }
 }

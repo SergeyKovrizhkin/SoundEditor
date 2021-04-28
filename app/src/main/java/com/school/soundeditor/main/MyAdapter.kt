@@ -14,7 +14,6 @@ import com.school.soundeditor.RecyclerSavedListData
 class MyAdapter(
     val dataList: RecyclerSavedListData,
     val listener: OnClickListener,
-    val onSavelistener: OnSaveDataList
 ) :
     RecyclerView.Adapter<BaseViewHolder>() {
 
@@ -61,9 +60,6 @@ class MyAdapter(
     fun addListItem(listItem: SuperRecyclerItemData) {
         dataList.data.add(dataList.data.size - 1, listItem)
         notifyDataSetChanged()
-        onSavelistener.onSaveData(dataList)
-        //MainActivity.dataList = dataList
-
     }
 
     inner class HeaderViewHolder(itemView: View) : BaseViewHolder(itemView) {
@@ -90,14 +86,10 @@ class MyAdapter(
             itemView.findViewById<ImageView>(R.id.add_button).setOnClickListener {
                 dataList.data.add(layoutPosition, getNewTrackItem())
                 notifyItemInserted(layoutPosition + 1)
-                onSavelistener.onSaveData(dataList)
-                //MainActivity.dataList = dataList
             }
             itemView.findViewById<ImageView>(R.id.remove_button).setOnClickListener {
                 dataList.data.removeAt(layoutPosition)
                 notifyItemRemoved(layoutPosition)
-                onSavelistener.onSaveData(dataList)
-                //MainActivity.dataList = dataList
             }
             itemView.findViewById<ImageView>(R.id.move_up_button).setOnClickListener {
                 moveUp()
@@ -113,8 +105,6 @@ class MyAdapter(
                 dataList.data.removeAt(currentPosition)
                 dataList.data.add(currentPosition - 1, element)
                 notifyItemMoved(currentPosition, currentPosition - 1)
-                onSavelistener.onSaveData(dataList)
-                //MainActivity.dataList = dataList
             }
         }
 
@@ -124,8 +114,6 @@ class MyAdapter(
                 dataList.data.removeAt(currentPosition)
                 dataList.data.add(currentPosition + 1, element)
                 notifyItemMoved(currentPosition, currentPosition + 1)
-                onSavelistener.onSaveData(dataList)
-                //MainActivity.dataList = dataList
             }
         }
 
@@ -157,14 +145,10 @@ class MyAdapter(
             itemView.findViewById<ImageView>(R.id.add_button).setOnClickListener {
                 dataList.data.add(layoutPosition, getNewMovieItem())
                 notifyItemInserted(layoutPosition + 1)
-                onSavelistener.onSaveData(dataList)
-                //MainActivity.dataList = dataList
             }
             itemView.findViewById<ImageView>(R.id.remove_button).setOnClickListener {
                 dataList.data.removeAt(layoutPosition)
                 notifyItemRemoved(layoutPosition)
-                onSavelistener.onSaveData(dataList)
-                //MainActivity.dataList = dataList
             }
             itemView.findViewById<ImageView>(R.id.move_up_button).setOnClickListener {
                 moveUp()
@@ -191,8 +175,6 @@ class MyAdapter(
                 dataList.data.removeAt(currentPosition)
                 dataList.data.add(currentPosition - 1, element)
                 notifyItemMoved(currentPosition, currentPosition - 1)
-                onSavelistener.onSaveData(dataList)
-                //MainActivity.dataList = dataList
             }
         }
 
@@ -202,7 +184,6 @@ class MyAdapter(
                 dataList.data.removeAt(currentPosition)
                 dataList.data.add(currentPosition + 1, element)
                 notifyItemMoved(currentPosition, currentPosition + 1)
-                //MainActivity.dataList = dataList
             }
         }
     }
@@ -217,10 +198,6 @@ class MyAdapter(
 
     interface OnClickListener {
         fun onClick(itemData: SuperRecyclerItemData)
-    }
-
-    interface OnSaveDataList {
-        fun onSaveData(dataList: RecyclerSavedListData)
     }
 
     companion object {

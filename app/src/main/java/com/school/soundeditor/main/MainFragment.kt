@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.school.soundeditor.MainActivity
 import com.school.soundeditor.R
 import com.school.soundeditor.RecyclerSavedListData
 import com.school.soundeditor.ShowItemForPlayback
@@ -18,21 +17,27 @@ internal class MainFragment : Fragment(), MainScreenView {
 
     private val presenter: MainScreenPresenter = MainPresenter(this)
     private var listener: ShowItemForPlayback? = null
-    private var dataList: RecyclerSavedListData? = null
-    private var onSaveData: OnSaveData? = null
-/*
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        onSaveData = context as OnSaveData
-    }*/
+    private lateinit var dataList: RecyclerSavedListData
+    private var savedScrollingPosition = 0
+    private var onSaveDataListener: OnSaveData? = null
+    private var onSaveScrollingPositionListener: OnSaveScrollingPosition? = null
 
-    fun setListener(listener: ShowItemForPlayback) {
+    internal fun setListener(listener: ShowItemForPlayback) {
         this.listener = listener
+    }
+
+    internal fun setOnSaveDataListener(onSaveDataListener: OnSaveData) {
+        this.onSaveDataListener = onSaveDataListener
+    }
+
+    internal fun setOnSaveScrollingPositionListener(onSaveScrollingPositionListener: OnSaveScrollingPosition) {
+        this.onSaveScrollingPositionListener = onSaveScrollingPositionListener
     }
 
     override fun onDetach() {
         listener = null
-        onSaveData = null
+        onSaveDataListener = null
+        onSaveScrollingPositionListener = null
         super.onDetach()
     }
 
@@ -43,25 +48,15 @@ internal class MainFragment : Fragment(), MainScreenView {
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
-    internal fun setOnSaveDataListener(onSaveData: OnSaveData) {
-        this.onSaveData = onSaveData
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
-            dataList = it.getParcelable(ARG_PARAM1)
+            dataList = it.getParcelable(ARG_PARAM1) ?: getTrackList()
+            savedScrollingPosition = it.getInt(ARG_PARAM2)
         }
-        val adapter = MyAdapter(dataList ?: getTrackList(), object : MyAdapter.OnClickListener {
+        val adapter = MyAdapter(dataList, object : MyAdapter.OnClickListener {
             override fun onClick(itemData: SuperRecyclerItemData) {
-                MainActivity.itemSelected = itemData
                 listener?.onShow(itemData)
-            }
-        }, object : MyAdapter.OnSaveDataList {
-            override fun onSaveData(dataList: RecyclerSavedListData) {
-                val activity = activity as MainActivity
-                //activity.onSaveData(dataList)
-                onSaveData?.onSave(dataList)
             }
         })
         recyclerView.adapter = adapter
@@ -74,6 +69,7 @@ internal class MainFragment : Fragment(), MainScreenView {
         add_button.setOnClickListener {
             adapter.addListItem(getListItem())
         }
+        recyclerView.scrollToPosition(savedScrollingPosition)
     }
 
     private fun getListItem(): SuperRecyclerItemData {
@@ -119,15 +115,25 @@ internal class MainFragment : Fragment(), MainScreenView {
         Toast.makeText(requireContext(), mp3, Toast.LENGTH_SHORT).show()
     }
 
+    override fun onDestroyView() {
+        val manager = recyclerView.layoutManager as LinearLayoutManager
+        val position = manager.findFirstCompletelyVisibleItemPosition()
+        onSaveScrollingPositionListener?.onSaveScrollingPosition(position)
+        onSaveDataListener?.onSave(dataList)
+        super.onDestroyView()
+    }
+
     companion object {
 
         private const val ARG_PARAM1 = "param1"
+        private const val ARG_PARAM2 = "param2"
 
         @JvmStatic
-        fun newInstance(dataList: RecyclerSavedListData?) =
+        fun newInstance(dataList: RecyclerSavedListData?, savedScrollingPosition: Int) =
             MainFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_PARAM1, dataList)
+                    putInt(ARG_PARAM2, savedScrollingPosition)
                 }
             }
     }
