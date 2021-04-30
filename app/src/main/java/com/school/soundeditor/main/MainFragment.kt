@@ -1,10 +1,14 @@
 package com.school.soundeditor.main
 
+import android.Manifest
+import android.app.AlertDialog
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +25,7 @@ internal class MainFragment : Fragment(), MainScreenView {
     private var savedScrollingPosition = 0
     private var onSaveDataListener: OnSaveData? = null
     private var onSaveScrollingPositionListener: OnSaveScrollingPosition? = null
+
 
     internal fun setListener(listener: ShowItemForPlayback) {
         this.listener = listener
@@ -67,9 +72,54 @@ internal class MainFragment : Fragment(), MainScreenView {
             )
         )
         add_button.setOnClickListener {
-            adapter.addListItem(getListItem())
+            checkPermission()
+            context?.let {
+                if (ContextCompat.checkSelfPermission(
+                        it,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    adapter.addListItem(getListItem())
+                }
+            }
         }
         recyclerView.scrollToPosition(savedScrollingPosition)
+    }
+
+    private fun checkPermission() {
+        context?.let {
+            when {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    Toast.makeText(context, "Файл добавлен в проект", Toast.LENGTH_SHORT).show()
+                }
+                shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) -> {
+                    AlertDialog.Builder(it)
+                        .setTitle("Доступ к файлам на устройстве")
+                        .setMessage("Для того, чтобы добавить звуковой файл в проект, приложению необходимо разрешение")
+                        .setPositiveButton("Предоставить доступ") { _, _ ->
+                            requestPermission()
+                        }
+                        .setNegativeButton("Отмена") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .create()
+                        .show()
+                }
+                else -> {
+                    requestPermission()
+                }
+            }
+        }
+    }
+
+    private fun requestPermission() {
+        requestPermissions(
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+            REQUEST_CODE
+        )
     }
 
     private fun getListItem(): SuperRecyclerItemData {
@@ -127,6 +177,7 @@ internal class MainFragment : Fragment(), MainScreenView {
 
         private const val ARG_PARAM1 = "param1"
         private const val ARG_PARAM2 = "param2"
+        private const val REQUEST_CODE = 42
 
         @JvmStatic
         fun newInstance(dataList: RecyclerSavedListData?, savedScrollingPosition: Int) =
