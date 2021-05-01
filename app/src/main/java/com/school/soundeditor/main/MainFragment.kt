@@ -2,6 +2,7 @@ package com.school.soundeditor.main
 
 import android.Manifest
 import android.app.AlertDialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,6 +17,7 @@ import com.school.soundeditor.R
 import com.school.soundeditor.RecyclerSavedListData
 import com.school.soundeditor.ShowItemForPlayback
 import kotlinx.android.synthetic.main.fragment_main.*
+
 
 internal class MainFragment : Fragment(), MainScreenView {
 
@@ -79,6 +81,7 @@ internal class MainFragment : Fragment(), MainScreenView {
                         Manifest.permission.READ_EXTERNAL_STORAGE
                     ) == PackageManager.PERMISSION_GRANTED
                 ) {
+                    chooseFile()
                     adapter.addListItem(getListItem())
                 }
             }
@@ -132,6 +135,19 @@ internal class MainFragment : Fragment(), MainScreenView {
         )
     }
 
+    private fun chooseFile() {
+        //create intent of Action get content
+        var chooseFile = Intent(Intent.ACTION_GET_CONTENT)
+        chooseFile.type = "*/*"
+        //set available types to audio and video only
+        val mimetypes = arrayOf("audio/*", "video/*")
+        chooseFile.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
+        //trigger file chooser
+        chooseFile = Intent.createChooser(chooseFile, "Choose a file")
+        //start activity and wait for the result
+        startActivityForResult(chooseFile, RC_PICK_FILE)
+    }
+
     private fun getTrackList(): RecyclerSavedListData {
         val data: MutableList<SuperRecyclerItemData> = mutableListOf(
             HeaderData(),
@@ -178,6 +194,7 @@ internal class MainFragment : Fragment(), MainScreenView {
         private const val ARG_PARAM1 = "param1"
         private const val ARG_PARAM2 = "param2"
         private const val REQUEST_CODE = 42
+        private const val RC_PICK_FILE = 10
 
         @JvmStatic
         fun newInstance(dataList: RecyclerSavedListData?, savedScrollingPosition: Int) =
