@@ -6,6 +6,37 @@
     android:background="@color/white">
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/bottomToolsPlaybackScreen"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/btnPlayAudio"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center"
+            android:background="@drawable/ic_play_arrow_black_24dp" />
+
+        <SeekBar
+            android:id="@+id/seekPlayAudio"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/tvAudioCurrentPosition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/bottomToolsPlaybackScreen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,13 +45,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="@string/play_record_item_description"
-            android:src="@android:drawable/ic_media_play" />
 
         <ImageView
             android:layout_width="0dp"

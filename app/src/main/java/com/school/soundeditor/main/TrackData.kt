@@ -9,5 +9,6 @@ data class TrackData(
     val performer: String = "",
     val duration: String = "",
     val format: String = "",
-    val image: Int = 0
+    val image: Int = 0,
+    val fileSrc: String? = null
 ) : Parcelable, SuperRecyclerItemData()

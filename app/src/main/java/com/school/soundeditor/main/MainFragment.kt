@@ -38,7 +38,6 @@ internal class MainFragment : Fragment(), MainScreenView {
     private var onSaveScrollingPositionListener: OnSaveScrollingPosition? = null
     private var fileSrc: String? = null
 
-
     internal fun setListener(listener: ShowItemForPlayback) {
         this.listener = listener
     }
@@ -92,7 +91,6 @@ internal class MainFragment : Fragment(), MainScreenView {
                     ) == PackageManager.PERMISSION_GRANTED
                 ) {
                     chooseFile()
-                    adapter.addListItem(getListItem())
                 }
             }
         }
@@ -137,11 +135,12 @@ internal class MainFragment : Fragment(), MainScreenView {
 
     private fun getListItem(): SuperRecyclerItemData {
         return TrackData(
-            "Bohemian Rhapsody",
-            "Queen",
-            "5:55",
-            "Mp3",
-            R.drawable.bohemian
+            "Test track name",
+            "Test performer",
+            "Test duration",
+            "Test format",
+            R.drawable.sample_image,
+            fileSrc
         )
     }
 
@@ -252,6 +251,8 @@ internal class MainFragment : Fragment(), MainScreenView {
                 //update chosen file textView with filesrc
                 Toast.makeText(requireContext(), fileSrc, Toast.LENGTH_LONG).show()
                 //handleFileChosenMediaPlayer(fileSrc)
+                val adapter = recyclerView.adapter as MyAdapter
+                adapter.addListItem(getListItem())
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
