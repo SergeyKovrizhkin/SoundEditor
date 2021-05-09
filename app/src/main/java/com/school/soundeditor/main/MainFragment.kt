@@ -70,6 +70,10 @@ internal class MainFragment : Fragment(), MainScreenView {
             dataList = it.getParcelable(ARG_PARAM1) ?: getTrackList()
             savedScrollingPosition = it.getInt(ARG_PARAM2)
         }
+        initView()
+    }
+
+    private fun initView() {
         val adapter = MyAdapter(dataList, object : MyAdapter.OnClickListener {
             override fun onClick(itemData: SuperRecyclerItemData) {
                 listener?.onShow(itemData)
@@ -84,7 +88,7 @@ internal class MainFragment : Fragment(), MainScreenView {
         )
         add_button.setOnClickListener {
             checkPermission()
-            context?.let {
+            /*context?.let {
                 if (ContextCompat.checkSelfPermission(
                         it,
                         Manifest.permission.READ_EXTERNAL_STORAGE
@@ -92,7 +96,7 @@ internal class MainFragment : Fragment(), MainScreenView {
                 ) {
                     chooseFile()
                 }
-            }
+            }*/
         }
         recyclerView.scrollToPosition(savedScrollingPosition)
     }
@@ -104,33 +108,70 @@ internal class MainFragment : Fragment(), MainScreenView {
                     it,
                     Manifest.permission.READ_EXTERNAL_STORAGE
                 ) == PackageManager.PERMISSION_GRANTED -> {
-                    Toast.makeText(context, "Файл добавлен в проект", Toast.LENGTH_SHORT).show()
+                    chooseFile()
+                    //Toast.makeText(context, "Файл добавлен в проект", Toast.LENGTH_SHORT).show()
                 }
                 shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) -> {
-                    AlertDialog.Builder(it)
-                        .setTitle("Доступ к файлам на устройстве")
-                        .setMessage("Для того, чтобы добавить звуковой файл в проект, приложению необходимо разрешение")
-                        .setPositiveButton("Предоставить доступ") { _, _ ->
-                            requestPermission()
-                        }
-                        .setNegativeButton("Отмена") { dialog, _ ->
-                            dialog.dismiss()
-                        }
-                        .create()
-                        .show()
+                    showOnRejectedPermissionDialog(it)
                 }
                 else -> {
-                    requestPermission()
+                    requestPermissionExternalStorage()
                 }
             }
         }
     }
 
-    private fun requestPermission() {
+    private fun showOnRejectedPermissionDialog(context: Context) {
+        AlertDialog.Builder(context)
+            .setTitle("Доступ к файлам на устройстве")
+            .setMessage("Для того, чтобы добавить звуковой файл в проект, приложению необходимо разрешение")
+            .setPositiveButton("Предоставить доступ") { _, _ ->
+                requestPermissionExternalStorage()
+            }
+            .setNegativeButton("Отмена") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
+    }
+
+    private fun requestPermissionExternalStorage() {
         requestPermissions(
             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-            REQUEST_CODE
+            REQUEST_CODE_EXTERNAL_STORAGE
         )
+    }
+
+    private fun requestPermissionContacts() {
+        requestPermissions(
+            arrayOf(Manifest.permission.READ_CONTACTS),
+            REQUEST_CODE_CONTACTS
+        )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            REQUEST_CODE_EXTERNAL_STORAGE -> {
+                // Проверяем, дано ли пользователем разрешение по нашему запросу
+                if ((grantResults.isNotEmpty() &&
+                            grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                ) {
+                    chooseFile()
+                } else {
+                    // Поясните пользователю, что экран останется пустым, потому что доступ к контактам не предоставлен
+                    showOnRejectedPermissionDialog(requireContext())
+                }
+                return
+            }
+            REQUEST_CODE_CONTACTS -> {
+                // Открываем контакты getContacts()
+                return
+            }
+        }
     }
 
     private fun getListItem(): SuperRecyclerItemData {
@@ -207,7 +248,7 @@ internal class MainFragment : Fragment(), MainScreenView {
             } else if (isDownloadsDocument(uri)) {
                 val id = DocumentsContract.getDocumentId(uri)
                 val contentUri = ContentUris.withAppendedId(
-                    Uri.parse("content://downloads/public_downloads"), java.lang.Long.valueOf(id)
+                    Uri.parse("content://downloads/public_downloads"), id.toLong()
                 )
                 return getDataColumn(context, contentUri, null, null)
             } else if (isMediaDocument(uri)) {
@@ -303,7 +344,8 @@ internal class MainFragment : Fragment(), MainScreenView {
 
         private const val ARG_PARAM1 = "param1"
         private const val ARG_PARAM2 = "param2"
-        private const val REQUEST_CODE = 42
+        private const val REQUEST_CODE_EXTERNAL_STORAGE = 42
+        private const val REQUEST_CODE_CONTACTS = 101
         private const val RC_PICK_FILE = 10
 
         @JvmStatic
