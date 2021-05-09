@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -27,6 +28,7 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
     private val myHandler: Handler = Handler()
     private var runnableTimeCounter = 0
     private var isAudioFilePlaying = false
+    private var isSeekBarBeingTouched = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -94,6 +96,30 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
             else -> {
             }
         }
+        seekPlayAudio.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                showMinutesSeconds(seekPlayAudio.progress)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                isSeekBarBeingTouched = true
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                isSeekBarBeingTouched = false
+                mediaPlayer!!.seekTo(seekPlayAudio.progress)
+                runnableTimeCounter = seekPlayAudio.progress
+            }
+        })
+    }
+
+    private fun showMinutesSeconds(positionToShow: Int) {
+        val value = positionToShow / 1000
+        var minutes: Int = value / 60
+        val seconds: Int = value % 60
+        val textForShow =
+            "${if (minutes < 10) "0" else ""}$minutes:${if (seconds < 10) "0" else ""}$seconds"
+        tvAudioCurrentPosition.text = textForShow
     }
 
     private fun setPlayButtonEnabled(enabled: Boolean) {
@@ -117,18 +143,13 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
     private val trackTimeRunnable: Runnable = object : Runnable {
         override fun run() {
             //checks if time passed is less than or equal to the track's duration
-            if (runnableTimeCounter <= mediaPlayer!!.duration) {
+            if (runnableTimeCounter < mediaPlayer!!.duration) {
                 //check if the track is running
                 if (isAudioFilePlaying) {
-                    //get current position of the track
-                    val mediaPlayerPosition = mediaPlayer!!.currentPosition
-                    //change the ms to seconds with one decimal
-                    val value = mediaPlayerPosition / 100
-                    //set value to the text view of the seek bar
-                    tvAudioCurrentPosition.text = (value / (10.0)).toString() + "s"
-                    //update progress of seek bar
-                    seekPlayAudio.progress = mediaPlayerPosition
-                    //re run after 100ms delay
+                    if (!isSeekBarBeingTouched) {
+                        showMinutesSeconds(mediaPlayer!!.currentPosition)
+                        seekPlayAudio.progress = mediaPlayer!!.currentPosition
+                    }
                     myHandler.postDelayed(this, 100)
                     //increment timer by 100ms
                     runnableTimeCounter += 100
@@ -151,6 +172,7 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
         tvAudioCurrentPosition.text = getString(R.string.zero_tv_audio_current_position)
         //change value of is playing to false
         isAudioFilePlaying = false
+        isSeekBarBeingTouched = false
         //change icon from pause to play
         btnPlayAudio.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp)
         runnableTimeCounter = 0

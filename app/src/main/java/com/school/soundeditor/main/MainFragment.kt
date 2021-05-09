@@ -88,15 +88,6 @@ internal class MainFragment : Fragment(), MainScreenView {
         )
         add_button.setOnClickListener {
             checkPermission()
-            /*context?.let {
-                if (ContextCompat.checkSelfPermission(
-                        it,
-                        Manifest.permission.READ_EXTERNAL_STORAGE
-                    ) == PackageManager.PERMISSION_GRANTED
-                ) {
-                    chooseFile()
-                }
-            }*/
         }
         recyclerView.scrollToPosition(savedScrollingPosition)
     }
@@ -109,7 +100,6 @@ internal class MainFragment : Fragment(), MainScreenView {
                     Manifest.permission.READ_EXTERNAL_STORAGE
                 ) == PackageManager.PERMISSION_GRANTED -> {
                     chooseFile()
-                    //Toast.makeText(context, "Файл добавлен в проект", Toast.LENGTH_SHORT).show()
                 }
                 shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) -> {
                     showOnRejectedPermissionDialog(it)
@@ -294,6 +284,7 @@ internal class MainFragment : Fragment(), MainScreenView {
                 //handleFileChosenMediaPlayer(fileSrc)
                 val adapter = recyclerView.adapter as MyAdapter
                 adapter.addListItem(getListItem())
+                recyclerView.scrollToPosition(dataList.data.size - 1)
             }
         }
         super.onActivityResult(requestCode, resultCode, data)

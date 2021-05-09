@@ -38,5 +38,5 @@
     <string name="move_up_description">move up</string>
     <string name="move_down_description">move down</string>
     <string name="remove_description">remove</string>
-    <string name="zero_tv_audio_current_position">0.0s</string>
+    <string name="zero_tv_audio_current_position">00:00</string>
 </resources>
