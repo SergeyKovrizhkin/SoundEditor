@@ -1,7 +1,7 @@
 package com.school.soundeditor
 
-import com.school.soundeditor.main.SuperRecyclerItemData
+import com.school.soundeditor.ui.main.data.BaseData
 
 interface ShowItemForPlayback {
-    fun onShow(itemData:SuperRecyclerItemData)
+    fun onShow(itemData: BaseData)
 }
