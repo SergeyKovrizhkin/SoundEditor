@@ -16,9 +16,11 @@ import com.school.soundeditor.ui.main.listeners.OnSaveData
 import com.school.soundeditor.ui.main.listeners.OnSaveScrollingPosition
 import com.school.soundeditor.ui.playback.PlaybackFragment
 import com.school.soundeditor.ui.record.RecordFragment
+import com.school.soundeditor.ui.record.RecorderDialogFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
-internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSave, OnExit {
+internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSave, OnExit,
+    RecorderDialogFragment.OnRecordingSavedListener {
 
     private val presenter = MainPresenter(this)
     private var dataList = RecyclerSavedListData()
@@ -140,6 +142,24 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
 
     override fun onExit() {
         finish()
+    }
+
+    override fun onSaved(filePath: String?) {
+        //show toast conforming the successful saving of the recorded audio file
+        Toast.makeText(
+            this,
+            "Audio file saved",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    override fun onFailed() {
+        //show toast saying that the saving of the recorded audio file failed
+        Toast.makeText(
+            this,
+            "Audio failed to save",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     companion object {

@@ -1,21 +1,19 @@
 package com.school.soundeditor.ui.main
 
-import android.content.ContentUris
+import android.Manifest
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.DocumentsContract
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -86,9 +84,8 @@ internal class MainFragment : Fragment(), MainScreenView {
             )
         )
         add_button.setOnClickListener {
-            activity?.let {
-                checkPermission(it)
-            }
+            checkPermission()
+
         }
         recyclerView.scrollToPosition(savedScrollingPosition)
     }
@@ -131,89 +128,6 @@ internal class MainFragment : Fragment(), MainScreenView {
         )
     }
 
-    private fun isExternalStorageDocument(uri: Uri): Boolean {
-        return "com.android.externalstorage.documents" == uri.authority
-    }
-
-    private fun isDownloadsDocument(uri: Uri): Boolean {
-        return "com.android.providers.downloads.documents" == uri.authority
-    }
-
-    private fun getDataColumn(
-        context: Context, uri: Uri?, selection: String?,
-        selectionArgs: Array<String>?
-    ): String? {
-        var cursor: Cursor? = null
-        val column = "_data"
-        val projection = arrayOf(
-            column
-        )
-        try {
-            cursor = context.contentResolver.query(
-                uri!!, projection, selection, selectionArgs,
-                null
-            )
-            if (cursor != null && cursor.moveToFirst()) {
-                val columnIndex: Int = cursor.getColumnIndexOrThrow(column)
-                return cursor.getString(columnIndex)
-            }
-        } finally {
-            cursor?.close()
-        }
-        return null
-    }
-
-    private fun isMediaDocument(uri: Uri): Boolean {
-        return "com.android.providers.media.documents" == uri.authority
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    fun getPath(context: Context, uri: Uri): String? {
-        if (DocumentsContract.isDocumentUri(context, uri)) {
-            // ExternalStorageProvider
-            if (isExternalStorageDocument(uri)) {
-                val docId = DocumentsContract.getDocumentId(uri)
-                val split = docId.split(":".toRegex()).toTypedArray()
-                val type = split[0]
-                if ("primary".equals(type, ignoreCase = true)) {
-                    return Environment.getExternalStorageDirectory().toString() + "/" + split[1]
-                }
-            } else if (isDownloadsDocument(uri)) {
-                val id = DocumentsContract.getDocumentId(uri)
-                val contentUri = ContentUris.withAppendedId(
-                    Uri.parse("content://downloads/public_downloads"), id.toLong()
-                )
-                return getDataColumn(context, contentUri, null, null)
-            } else if (isMediaDocument(uri)) {
-                val docId = DocumentsContract.getDocumentId(uri)
-                val split = docId.split(":".toRegex()).toTypedArray()
-                val type = split[0]
-                var contentUri: Uri? = null
-                when (type) {
-                    "image" -> {
-                        contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                    }
-                    "video" -> {
-                        contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-                    }
-                    "audio" -> {
-                        contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-                    }
-                }
-                val selection = "_id=?"
-                val selectionArgs = arrayOf(
-                    split[1]
-                )
-                return getDataColumn(context, contentUri, selection, selectionArgs)
-            }
-        } else if ("content".equals(uri.scheme, ignoreCase = true)) {
-            return getDataColumn(context, uri, null, null)
-        } else if ("file".equals(uri.scheme, ignoreCase = true)) {
-            return uri.path
-        }
-        return null
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_PICK_FILE) {
@@ -232,6 +146,61 @@ internal class MainFragment : Fragment(), MainScreenView {
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
+
+    private fun checkPermission() {
+        context?.let {
+            when {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    chooseFile()
+                }
+                shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) -> {
+                    showOnRejectedPermissionDialog(it)
+                }
+                else -> {
+                    requestPermissionExternalStorage()
+                }
+            }
+        }
+    }
+
+    private fun chooseFile() {
+        //create intent of Action get content
+        var chooseFile = Intent(Intent.ACTION_GET_CONTENT)
+        chooseFile.type = "*/*"
+        //set available types to audio and video only
+        val mimetypes = arrayOf("audio/*", "video/*")
+        chooseFile.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
+        //trigger file chooser
+        chooseFile = Intent.createChooser(chooseFile, "Choose a file")
+        //start activity and wait for the result
+        startActivityForResult(chooseFile, REQUEST_CODE_PICK_FILE)
+    }
+
+    private fun showOnRejectedPermissionDialog(context: Context) {
+        AlertDialog.Builder(context)
+            .setTitle("Доступ к файлам на устройстве")
+            .setMessage("Для того, чтобы добавить звуковой файл в проект, приложению необходимо разрешение")
+            .setPositiveButton("Предоставить доступ") { _, _ ->
+                requestPermissionExternalStorage()
+            }
+            .setNegativeButton("Отмена") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
+    }
+
+
+    private fun requestPermissionExternalStorage() {
+        requestPermissions(
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+            REQUEST_CODE_EXTERNAL_STORAGE
+        )
+    }
+
 
     private fun getTrackList(): RecyclerSavedListData {
         val data: MutableList<BaseData> = mutableListOf(

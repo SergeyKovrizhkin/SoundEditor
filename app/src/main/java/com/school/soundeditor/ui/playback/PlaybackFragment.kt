@@ -28,7 +28,6 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
     private val myHandler: Handler = Handler()
     private var runnableTimeCounter = 0
     private var isAudioFilePlaying = false
-    private var isSeekBarBeingTouched = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -102,11 +101,9 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                isSeekBarBeingTouched = true
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                isSeekBarBeingTouched = false
                 mediaPlayer!!.seekTo(seekPlayAudio.progress)
                 runnableTimeCounter = seekPlayAudio.progress
             }
@@ -115,7 +112,7 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
 
     private fun showMinutesSeconds(positionToShow: Int) {
         val value = positionToShow / 1000
-        var minutes: Int = value / 60
+        val minutes: Int = value / 60
         val seconds: Int = value % 60
         val textForShow =
             "${if (minutes < 10) "0" else ""}$minutes:${if (seconds < 10) "0" else ""}$seconds"
@@ -146,10 +143,7 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
             if (runnableTimeCounter < mediaPlayer!!.duration) {
                 //check if the track is running
                 if (isAudioFilePlaying) {
-                    if (!isSeekBarBeingTouched) {
-                        showMinutesSeconds(mediaPlayer!!.currentPosition)
-                        seekPlayAudio.progress = mediaPlayer!!.currentPosition
-                    }
+                    seekPlayAudio.progress = mediaPlayer!!.currentPosition
                     myHandler.postDelayed(this, 100)
                     //increment timer by 100ms
                     runnableTimeCounter += 100
@@ -172,7 +166,6 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
         tvAudioCurrentPosition.text = getString(R.string.zero_tv_audio_current_position)
         //change value of is playing to false
         isAudioFilePlaying = false
-        isSeekBarBeingTouched = false
         //change icon from pause to play
         btnPlayAudio.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp)
         runnableTimeCounter = 0
@@ -211,4 +204,6 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
                 }
             }
     }
+
+    //TODO("Если музыка играет, и пользователь переключается на другой фрагмент, то приложение падает")
 }
