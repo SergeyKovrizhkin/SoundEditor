@@ -11,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -39,9 +41,10 @@ public class RecorderDialogFragment extends DialogFragment implements View.OnCli
     }
 
     // views
-    private Button btnRecord;
+    private ImageButton btnRecord;
     private Button btnCancel;
     private Button btnSave;
+    private TextView btnRecordText;
     private LinearLayout llRecorded;
     // timer
     private Timer timer;
@@ -110,7 +113,8 @@ public class RecorderDialogFragment extends DialogFragment implements View.OnCli
      */
     private void init(View rootView) {
         // init views
-        btnRecord = (Button) rootView.findViewById(R.id.btnRecord);
+        btnRecord = (ImageButton) rootView.findViewById(R.id.btnRecord);
+        btnRecordText = (TextView) rootView.findViewById(R.id.btnRecordText);
         btnCancel = (Button) rootView.findViewById(R.id.btnCancelRecorded);
         btnSave = (Button) rootView.findViewById(R.id.btnSaveRecorded);
         llRecorded = (LinearLayout) rootView.findViewById(R.id.llRecorded);
@@ -122,7 +126,7 @@ public class RecorderDialogFragment extends DialogFragment implements View.OnCli
 
     private void defineAudioOutput() {
         //create file in external memory, in our folder with name plus timestamp
-        filePath = Environment.getExternalStorageDirectory().getPath() + "/mp4Test/audioMP4" + System.currentTimeMillis() + ".mp4";
+        filePath = Environment.getExternalStorageDirectory().getPath() + "/Music/audioMP4" + System.currentTimeMillis() + ".mp4";
         audioFile = new File(filePath);
     }
 
@@ -176,7 +180,7 @@ public class RecorderDialogFragment extends DialogFragment implements View.OnCli
         String time = String.format("%01d:%02d",
                 (secondsCounter % 3600) / 60, (secondsCounter % 60));
         // set the time string text to record button
-        btnRecord.setText(time);
+        btnRecordText.setText(time);
     }
 
     /**
