@@ -84,7 +84,8 @@ internal class MainFragment : Fragment(), MainScreenView {
             )
         )
         add_button.setOnClickListener {
-            checkPermission()
+            //checkPermission()
+            checkPermission(this)
 
         }
         recyclerView.scrollToPosition(savedScrollingPosition)
@@ -102,7 +103,7 @@ internal class MainFragment : Fragment(), MainScreenView {
                             grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 ) {
                     activity?.let {
-                        chooseFile(it)
+                        chooseFile(this)
                     }
                 } else {
                     // Поясните пользователю, что экран останется пустым, потому что доступ к контактам не предоставлен

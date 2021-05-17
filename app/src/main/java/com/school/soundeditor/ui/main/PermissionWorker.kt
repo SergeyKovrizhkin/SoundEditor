@@ -5,28 +5,27 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
 
 //TODO Вынести ненужные методы из Фрагмента (onActivityResult не вызывается)
 
-internal fun checkPermission(context: FragmentActivity) {
+internal fun checkPermission(fragment: MainFragment) {
     when {
         ContextCompat.checkSelfPermission(
-            context,
+            fragment.requireContext(),
             READ_EXTERNAL_STORAGE
         ) == PackageManager.PERMISSION_GRANTED -> {
-            chooseFile(context)
+            chooseFile(fragment)
         }
-        context.shouldShowRequestPermissionRationale(READ_EXTERNAL_STORAGE) -> {
-            showOnRejectedPermissionDialog(context)
+        fragment.shouldShowRequestPermissionRationale(READ_EXTERNAL_STORAGE) -> {
+            showOnRejectedPermissionDialog(fragment)
         }
         else -> {
-            requestPermissionExternalStorage(context)
+            requestPermissionExternalStorage(fragment)
         }
     }
 }
 
-internal fun chooseFile(context: FragmentActivity) {
+internal fun chooseFile(fragment: MainFragment) {
     //create intent of Action get content
     var chooseFile = Intent(Intent.ACTION_GET_CONTENT)
     chooseFile.type = "*/*"
@@ -36,15 +35,15 @@ internal fun chooseFile(context: FragmentActivity) {
     //trigger file chooser
     chooseFile = Intent.createChooser(chooseFile, "Choose a file")
     //start activity and wait for the result
-    context.startActivityForResult(chooseFile, MainFragment.REQUEST_CODE_PICK_FILE)
+    fragment.startActivityForResult(chooseFile, MainFragment.REQUEST_CODE_PICK_FILE)
 }
 
-internal fun showOnRejectedPermissionDialog(context: FragmentActivity) {
-    AlertDialog.Builder(context)
+internal fun showOnRejectedPermissionDialog(fragment: MainFragment) {
+    AlertDialog.Builder(fragment.requireContext())
         .setTitle("Доступ к файлам на устройстве")
         .setMessage("Для того, чтобы добавить звуковой файл в проект, приложению необходимо разрешение")
         .setPositiveButton("Предоставить доступ") { _, _ ->
-            requestPermissionExternalStorage(context)
+            requestPermissionExternalStorage(fragment)
         }
         .setNegativeButton("Отмена") { dialog, _ ->
             dialog.dismiss()
@@ -53,8 +52,8 @@ internal fun showOnRejectedPermissionDialog(context: FragmentActivity) {
         .show()
 }
 
-private fun requestPermissionExternalStorage(context: FragmentActivity) {
-    context.requestPermissions(
+private fun requestPermissionExternalStorage(fragment: MainFragment) {
+    fragment.requestPermissions(
         arrayOf(READ_EXTERNAL_STORAGE),
         MainFragment.REQUEST_CODE_EXTERNAL_STORAGE
     )
