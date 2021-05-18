@@ -1,11 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:text="@string/trim" />
+
+
+        <LinearLayout
+            android:id="@+id/frmChosenFile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:id="@+id/tvSeekStart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <SeekBar
+                    android:id="@+id/seekBarStartTime"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content" />
+
+                <SeekBar
+                    android:id="@+id/seekBarEndTime"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:mirrorForRtl="true" />
+
+                <TextView
+                    android:id="@+id/tvSeekEnd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:text="@string/loop" />
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp">
+
+                <Button
+                    android:id="@+id/btnSubtract"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/shape_circle_white"
+                    android:text="@string/minus" />
+
+                <TextView
+                    android:id="@+id/tvLoop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:inputType="number"
+                    android:text="1" />
+
+                <Button
+                    android:id="@+id/btnAdd"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/shape_circle_white"
+                    android:text="@string/plus" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnTrimAndLoop"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:text="Trim and Loop" />
+
+        <TextView
+            android:id="@+id/tvSavedFile"
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            tools:text="@string/looped_file_path" />
+
+        <FrameLayout
+            android:id="@+id/frmFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+        <!--<LinearLayoutandroid:layout_width="wrap_content"android:layout_height="wrap_content"android:layout_margin="14dp"android:orientation="horizontal"android:layout_gravity="center"><Buttonandroid:id="@+id/btnPlayAudio"android:layout_width="44dp"android:layout_height="44dp"android:background="@drawable/ic_play_arrow_black_24dp"/><SeekBarandroid:id="@+id/seekPlayAudio"android:layout_width="200dp"android:layout_height="wrap_content"android:layout_gravity="center"/><TextViewandroid:id="@+id/tvAudioCurrentPosition"android:layout_width="wrap_content"android:layout_height="wrap_content"android:layout_gravity="center"/></LinearLayout> -->
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
