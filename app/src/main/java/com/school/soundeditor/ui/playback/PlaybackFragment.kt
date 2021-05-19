@@ -1,6 +1,5 @@
 package com.school.soundeditor.ui.playback
 
-
 import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
@@ -29,7 +28,6 @@ import com.googlecode.mp4parser.authoring.tracks.AppendTrack
 import com.googlecode.mp4parser.authoring.tracks.CroppedTrack
 import com.school.soundeditor.R
 import com.school.soundeditor.ui.main.data.BaseData
-import com.school.soundeditor.ui.main.data.MovieData
 import com.school.soundeditor.ui.main.data.TrackData
 import kotlinx.android.synthetic.main.fragment_playback.*
 import java.io.File
@@ -39,25 +37,16 @@ import java.io.RandomAccessFile
 import java.nio.channels.FileChannel
 import java.util.*
 
-
 internal class PlaybackFragment : Fragment(), PlaybackScreenView {
 
     private val presenter: PlaybackScreenPresenter = PlaybackPresenter(this)
-    private var param1: BaseData? = null
-    private var mediaPlayer: MediaPlayer? = null
+    private var trackData: BaseData? = null
+    private lateinit var mediaPlayer: MediaPlayer
     private val myHandler: Handler = Handler()
     private var runnableTimeCounter = 0
     private var isAudioFilePlaying = false
 
-    private val TRIMMED_FILE = "outputAfterTrim.mp4"
-    private val LOOPED_FILE = "loopedAfterTrim.mp4"
-
     private var fileSrc: String? = null
-    private val PERMISSIONS_STORAGE = arrayOf(
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
-    )
-    private val REQUEST_EXTERNAL_STORAGE = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,7 +58,7 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
-            param1 = it.getParcelable(ARG_PARAM1)
+            trackData = it.getParcelable(TRACK_DATA_EXTRA)
         }
         init()
     }
@@ -77,69 +66,12 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
     private fun init() {
         seekPlayAudio.isClickable = false
         setPlayButtonEnabled(false)
-        btnPlayAudio.setOnClickListener {
-            handlePlayClicked()
-            isAudioFilePlaying = if (!isAudioFilePlaying) {
-                btnPlayAudio.setBackgroundResource(R.drawable.ic_pause_black_24dp)
-                true
-            } else {
-                btnPlayAudio.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp)
-                false
-            }
-        }
+        btnPlayAudio.setOnClickListener { playAudio() }
         tvAudioCurrentPosition.text = getString(R.string.zero_tv_audio_current_position)
-        when (param1) {
-            is TrackData -> {
-                container.removeAllViewsInLayout()
-                val trackDetailLayout = layoutInflater.inflate(R.layout.track_detail_layout, null)
-                val data = param1 as TrackData
-                trackDetailLayout.findViewById<ImageView>(R.id.track_image)
-                    .setImageResource(data.image)
-                trackDetailLayout.findViewById<TextView>(R.id.track_name_text_view).text = data.name
-                trackDetailLayout.findViewById<TextView>(R.id.track_performer_text_view).text =
-                    data.performer
-                trackDetailLayout.findViewById<TextView>(R.id.track_duration_text_view).text =
-                    data.duration
-                trackDetailLayout.findViewById<TextView>(R.id.track_format_text_view).text =
-                    data.format
-                data.fileSrc?.let { handleFileChosenMediaPlayer(it) }
-                fileSrc = data.fileSrc
-                container.addView(trackDetailLayout)
-            }
-            is MovieData -> {
-                container.removeAllViewsInLayout()
-                val movieDetailLayout = layoutInflater.inflate(R.layout.movie_detail_layout, null)
-                val data = param1 as MovieData
-                movieDetailLayout.findViewById<ImageView>(R.id.movie_image)
-                    .setImageResource(data.image)
-                movieDetailLayout.findViewById<TextView>(R.id.movie_name_text_view).text = data.name
-                movieDetailLayout.findViewById<TextView>(R.id.movie_producer_text_view).text =
-                    data.producer
-                movieDetailLayout.findViewById<TextView>(R.id.movie_duration_text_view).text =
-                    data.duration
-                movieDetailLayout.findViewById<TextView>(R.id.movie_format_text_view).text =
-                    data.format
-                movieDetailLayout.findViewById<TextView>(R.id.starring_text_view).text =
-                    data.starring
-                container.addView(movieDetailLayout)
-            }
-            else -> {
-            }
-        }
 
-        seekPlayAudio.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                showMinutesSeconds(seekPlayAudio.progress)
-            }
+        createNewTrackLayout()
+        setAudioSeekBar()
 
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                mediaPlayer!!.seekTo(seekPlayAudio.progress)
-                runnableTimeCounter = seekPlayAudio.progress
-            }
-        })
         btnTrimAndLoop.setOnClickListener {
             handleTrimAndLoopButtonClick()
         }
@@ -149,6 +81,37 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
         btnSubtract.setOnClickListener {
             subtractFromLoop()
         }
+
+        setSeekBarStartTime()
+        setSeekBarEndTime()
+        getDuration()
+    }
+
+    private fun getDuration() {
+        //get duration of audio file
+        if (fileSrc == null) {
+            Toast.makeText(requireContext(), "Не найден файл на диске", Toast.LENGTH_SHORT).show()
+        } else {
+            val fileDuration = getAudioFileDuration(fileSrc!!)
+            //set seek bar limit to 90% of file duration
+            configureSeekBars(fileDuration - (fileDuration * 0.1).toInt())
+        }
+    }
+
+    private fun setSeekBarEndTime() {
+        seekBarEndTime.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+                //convert i which is in value of milliseconds to seconds with one decimal
+                val value = i / 100
+                tvSeekEnd.text = (value / 10.0).toString() + "s"
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+        })
+    }
+
+    private fun setSeekBarStartTime() {
         seekBarStartTime.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
                 //convert i which is in value of milliseconds to seconds with one decimal
@@ -160,20 +123,51 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
-        seekBarEndTime.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                //convert i which is in value of milliseconds to seconds with one decimal
-                val value = i / 100
-                tvSeekEnd.setText((value / 10.0).toString() + "s")
+    }
+
+    private fun setAudioSeekBar() {
+        seekPlayAudio.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                showMinutesSeconds(seekPlayAudio.progress)
             }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                mediaPlayer.seekTo(seekPlayAudio.progress)
+                runnableTimeCounter = seekPlayAudio.progress
+            }
         })
-        //get duration of audio file
-        val fileDuration = getAudioFileDuration(fileSrc!!)
-        //set seek bar limit to 90% of file duration
-        configureSeekBars(fileDuration - (fileDuration * 0.1).toInt())
+    }
+
+    private fun createNewTrackLayout() {
+        container.removeAllViewsInLayout()
+        val trackDetailLayout = layoutInflater.inflate(R.layout.track_detail_layout, null)
+        val data = trackData as TrackData
+        trackDetailLayout.findViewById<ImageView>(R.id.track_image)
+            .setImageResource(data.image)
+        trackDetailLayout.findViewById<TextView>(R.id.track_name_text_view).text = data.name
+        trackDetailLayout.findViewById<TextView>(R.id.track_performer_text_view).text =
+            data.performer
+        trackDetailLayout.findViewById<TextView>(R.id.track_duration_text_view).text =
+            data.duration
+        trackDetailLayout.findViewById<TextView>(R.id.track_format_text_view).text =
+            data.format
+        data.fileSrc?.let { handleFileChosenMediaPlayer(it) }
+        fileSrc = data.fileSrc
+        container.addView(trackDetailLayout)
+    }
+
+    private fun playAudio() {
+        handlePlayClicked()
+        isAudioFilePlaying = if (!isAudioFilePlaying) {
+            btnPlayAudio.setBackgroundResource(R.drawable.ic_pause_black_24dp)
+            true
+        } else {
+            btnPlayAudio.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp)
+            false
+        }
     }
 
     private fun showMinutesSeconds(positionToShow: Int) {
@@ -196,20 +190,20 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
         //run updateTrackTime after 100ms
         myHandler.postDelayed(trackTimeRunnable, 100)
         //if already playing, pause
-        if (mediaPlayer!!.isPlaying) {
-            mediaPlayer!!.pause()
+        if (mediaPlayer.isPlaying) {
+            mediaPlayer.pause()
         } else {
-            mediaPlayer!!.start()
+            mediaPlayer.start()
         }
     }
 
     private val trackTimeRunnable: Runnable = object : Runnable {
         override fun run() {
             //checks if time passed is less than or equal to the track's duration
-            if (runnableTimeCounter < mediaPlayer!!.duration) {
+            if (runnableTimeCounter < mediaPlayer.duration) {
                 //check if the track is running
                 if (isAudioFilePlaying) {
-                    seekPlayAudio.progress = mediaPlayer!!.currentPosition
+                    seekPlayAudio.progress = mediaPlayer.currentPosition
                     myHandler.postDelayed(this, 100)
                     //increment timer by 100ms
                     runnableTimeCounter += 100
@@ -239,14 +233,14 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
 
     private fun handleFileChosenMediaPlayer(fileSrc: String) {
         resetMediaPlayer(fileSrc)
-        mediaPlayer?.let { seekPlayAudio.max = it.duration }
+        seekPlayAudio.max = mediaPlayer.duration
         setPlayButtonEnabled(true)
         //set seek bar to start
         resetAudioUI()
     }
 
     private fun resetMediaPlayer(filePath: String) {
-        mediaPlayer?.reset()
+        mediaPlayer.reset()
         mediaPlayer = MediaPlayer.create(activity, Uri.fromFile(File(filePath)))
     }
 
@@ -283,14 +277,22 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
     private fun handleTrimAndLoopButtonClick() {
         if (fileSrc == null) {
             //if fileSource null tell the user to record an audio or choose a file
-            Toast.makeText(requireContext(), "Please record an audio or choose a file", Toast.LENGTH_SHORT)
+            Toast.makeText(
+                requireContext(),
+                "Please record an audio or choose a file",
+                Toast.LENGTH_SHORT
+            )
                 .show()
             return
         }
         val tvLoopString = tvLoop!!.text.toString()
         val loopNumber = Integer.valueOf(tvLoopString)
         if (loopNumber == 0) {
-            Toast.makeText(requireContext(), "Please Enter Number Greater than 0", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                requireContext(),
+                "Please Enter Number Greater than 0",
+                Toast.LENGTH_SHORT
+            ).show()
             return
         }
         val fileDuration = getAudioFileDuration(fileSrc!!)
@@ -503,8 +505,8 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
      * @param fileDuration is the duration of the file
      */
     private fun configureSeekBars(fileDuration: Int) {
-        seekBarStartTime!!.max = fileDuration / 2
-        seekBarEndTime!!.max = fileDuration / 2
+        seekBarStartTime.max = fileDuration / 2
+        seekBarEndTime.max = fileDuration / 2
     }
 
 
@@ -530,17 +532,17 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
      * Checks if the app has permission to write to device storage
      * If the app does not has permission then the user will be prompted to grant permissions
      */
-    fun verifyStoragePermissions(activity: Activity?) {
+    private fun verifyStoragePermissions(activity: Activity) {
         // Check if we have write permission
         val permission = ActivityCompat.checkSelfPermission(
-            activity!!,
+            activity,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
         if (permission != PackageManager.PERMISSION_GRANTED) {
             // We don't have permission so prompt the user
             ActivityCompat.requestPermissions(
                 activity,
-                PERMISSIONS_STORAGE,
+                permissions,
                 REQUEST_EXTERNAL_STORAGE
             )
         }
@@ -548,13 +550,20 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
 
     companion object {
 
-        private const val ARG_PARAM1 = "param1"
+        private const val TRACK_DATA_EXTRA = "param1"
+        private const val TRIMMED_FILE = "outputAfterTrim.mp4"
+        private const val LOOPED_FILE = "loopedAfterTrim.mp4"
+        private const val REQUEST_EXTERNAL_STORAGE = 1
+        private val permissions = arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
 
         @JvmStatic
-        fun newInstance(param1: BaseData?) =
+        fun newInstance(trackData: BaseData?) =
             PlaybackFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(ARG_PARAM1, param1)
+                    putParcelable(TRACK_DATA_EXTRA, trackData)
                 }
             }
     }

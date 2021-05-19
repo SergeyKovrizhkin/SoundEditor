@@ -126,6 +126,9 @@ public class RecorderDialogFragment extends DialogFragment implements View.OnCli
 
     private void defineAudioOutput() {
         //create file in external memory, in our folder with name plus timestamp
+        //filePath = requireActivity().getFilesDir().getPath() + "/Music/audioMP4" + System.currentTimeMillis() + ".mp4";
+        //filePath = requireActivity().getExternalFilesDir(null).getPath() + "/Music/audioMP4" + System.currentTimeMillis() + ".mp4";
+        //filePath = requireActivity().getExternalFilesDir(Environment.DIRECTORY_MUSIC).getPath() + "/Music/audioMP4" + System.currentTimeMillis() + ".mp4";
         filePath = Environment.getExternalStorageDirectory().getPath() + "/Music/audioMP4" + System.currentTimeMillis() + ".mp4";
         audioFile = new File(filePath);
     }
