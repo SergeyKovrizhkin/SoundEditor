@@ -70,7 +70,9 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
         tvAudioCurrentPosition.text = getString(R.string.zero_tv_audio_current_position)
 
         createNewTrackLayout()
-        setAudioSeekBar()
+        if (fileSrc != null) {
+            setAudioSeekBar()
+        }
 
         btnTrimAndLoop.setOnClickListener {
             handleTrimAndLoopButtonClick()
@@ -102,8 +104,8 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
         seekBarEndTime.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
                 //convert i which is in value of milliseconds to seconds with one decimal
-                val value = i / 100
-                tvSeekEnd.text = (value / 10.0).toString() + "s"
+                val textToShow = (i / 100 / 10.0).toString() + "s"
+                tvSeekEnd.text = textToShow
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -115,9 +117,8 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
         seekBarStartTime.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
                 //convert i which is in value of milliseconds to seconds with one decimal
-                val value = i / 100
-                //set value of text view of seek bar
-                tvSeekStart.setText((value / 10.0).toString() + "s")
+                val textToShow = (i / 100 / 10.0).toString() + "s"
+                tvSeekStart.text = textToShow
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -232,6 +233,7 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
     }
 
     private fun handleFileChosenMediaPlayer(fileSrc: String) {
+        mediaPlayer = MediaPlayer.create(activity, Uri.fromFile(File(fileSrc)))
         resetMediaPlayer(fileSrc)
         seekPlayAudio.max = mediaPlayer.duration
         setPlayButtonEnabled(true)
@@ -256,19 +258,21 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
      * Subtracts one from the value of the loop field.
      */
     private fun subtractFromLoop() {
-        var tvLoopNumber = Integer.valueOf(tvLoop!!.text.toString())
+        var tvLoopNumber = Integer.valueOf(tvLoop.text.toString())
         if (tvLoopNumber == 1) return
         tvLoopNumber--
-        tvLoop.setText(tvLoopNumber.toString() + "")
+        val tvLoopText = tvLoopNumber.toString() + ""
+        tvLoop.text = tvLoopText
     }
 
     /**
      * Adds one to the value of the loop field.
      */
     private fun addToLoop() {
-        var tvLoopNumber = Integer.valueOf(tvLoop!!.text.toString())
+        var tvLoopNumber = Integer.valueOf(tvLoop.text.toString())
         tvLoopNumber++
-        tvLoop.setText(tvLoopNumber.toString() + "")
+        val tvLoopText = tvLoopNumber.toString() + ""
+        tvLoop.text = tvLoopText
     }
 
     /**
@@ -284,27 +288,26 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
             )
                 .show()
             return
+        } else {
+            val tvLoopString = tvLoop.text.toString()
+            val loopNumber = Integer.valueOf(tvLoopString)
+            if (loopNumber == 0) {
+                Toast.makeText(
+                    requireContext(),
+                    "Please Enter Number Greater than 0",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return
+            }
+            val fileDuration = getAudioFileDuration(fileSrc!!)
+            val trimFromStartTime = seekBarStartTime.progress.toDouble()
+            val trimFromEndTime = seekBarEndTime.progress.toDouble()
+            //trim file from start time to end time
+            val endTime = fileDuration - trimFromEndTime
+            trimFile(fileSrc!!, trimFromStartTime / 1000.0, endTime / 1000.0)
+            //loop file
+            loopFile(TRIMMED_FILE, loopNumber)
         }
-        val tvLoopString = tvLoop!!.text.toString()
-        val loopNumber = Integer.valueOf(tvLoopString)
-        if (loopNumber == 0) {
-            Toast.makeText(
-                requireContext(),
-                "Please Enter Number Greater than 0",
-                Toast.LENGTH_SHORT
-            ).show()
-            return
-        }
-        val fileDuration = getAudioFileDuration(fileSrc!!)
-        var trimFromStartTime = 0.0
-        var trimFromEndTime = 0.0
-        trimFromStartTime = seekBarStartTime!!.progress.toDouble()
-        trimFromEndTime = seekBarEndTime!!.progress.toDouble()
-        //trim file from start time to end time
-        val endTime = fileDuration - trimFromEndTime
-        trimFile(fileSrc!!, trimFromStartTime / 1000.0, endTime / 1000.0)
-        //loop file
-        loopFile(TRIMMED_FILE, loopNumber)
     }
 
     /**
@@ -313,7 +316,7 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
     private fun trimFile(inputFilePath: String, startTime: Double, endTime: Double) {
         try {
             // get file from memory
-            val dir = File(Environment.getExternalStorageDirectory(), "/mp4Test/")
+            val dir = File(Environment.getExternalStorageDirectory(), "Music/mp4Test/")
             dir.mkdirs()
             val inputFile = File(inputFilePath)
             // create movie from the file
@@ -333,7 +336,7 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
             // at such a sample we SHOULD make sure that the start of the new fragment is exactly
             // such a frame
             for (track in tracks) {
-                if (track.syncSamples != null && track.syncSamples.size > 0) {
+                if (track.syncSamples != null && track.syncSamples.isNotEmpty()) {
                     if (timeCorrected) {
                         // This exception here could be a false positive in case we have multiple tracks
                         // with sync samples at exactly the same positions. E.g. a single movie containing
@@ -376,7 +379,7 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
             }
             val fos =
                 FileOutputStream("$dir/$TRIMMED_FILE") //String.format("output-%f-%f.mp4", startTime1, endTime1)
-            val fc: FileChannel = fos.getChannel()
+            val fc: FileChannel = fos.channel
             out.writeContainer(fc)
             fc.close()
             fos.close()
@@ -424,7 +427,7 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
      */
     private fun loopFile(inputFilePath: String, loopNumber: Int) {
         verifyStoragePermissions(requireActivity())
-        val dir = File(Environment.getExternalStorageDirectory(), "/mp4Test/")
+        val dir = File(Environment.getExternalStorageDirectory(), "/Music/mp4Test/")
         dir.mkdirs()
         //file which we will work on
         val inputFile = File(dir, inputFilePath)
@@ -448,8 +451,8 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
         val audioTracks: MutableList<Track> = ArrayList()
         for (movie in inputMovies) {
             if (movie != null) {
-                for (track in movie.getTracks()) {
-                    if (track.getHandler().equals("soun")) {
+                for (track in movie.tracks) {
+                    if (track.handler.equals("soun")) {
                         audioTracks.add(track)
                     }
                 }
@@ -469,24 +472,21 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
         }
         var fc: FileChannel? = null
         try {
-            fc = RandomAccessFile(outputFile, "rw").getChannel()
+            fc = RandomAccessFile(outputFile, "rw").channel
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
         try {
-            if (container != null) {
-                container.writeContainer(fc)
-            }
+            container?.writeContainer(fc)
             Toast.makeText(requireContext(), "File was saved", Toast.LENGTH_SHORT).show()
-            tvSavedFile!!.text = "File Saved: " + outputFile.path
+            val textToShow = "File Saved: " + outputFile.path
+            tvSavedFile.text = textToShow
             handleLoopedFileSaved(outputFile.path)
         } catch (e: java.lang.Exception) {
             Toast.makeText(requireContext(), "File failed to be saved", Toast.LENGTH_SHORT).show()
         }
         try {
-            if (fc != null) {
-                fc.close()
-            }
+            fc?.close()
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -521,7 +521,9 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
             mmr.setDataSource(filePath)
             val strDuration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
             mmr.release()
-            duration = strDuration!!.toInt()
+            if (strDuration != null) {
+                duration = strDuration.toInt()
+            }
         } catch (e: Exception) {
             // nothing to be done
         }

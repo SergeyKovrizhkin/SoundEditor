@@ -125,11 +125,14 @@ public class RecorderDialogFragment extends DialogFragment implements View.OnCli
     }
 
     private void defineAudioOutput() {
+        File dir = new File(Environment.getExternalStorageDirectory(), "/Music/mp4Test/");
+        dir.mkdirs();
         //create file in external memory, in our folder with name plus timestamp
-        //filePath = requireActivity().getFilesDir().getPath() + "/Music/audioMP4" + System.currentTimeMillis() + ".mp4";
-        //filePath = requireActivity().getExternalFilesDir(null).getPath() + "/Music/audioMP4" + System.currentTimeMillis() + ".mp4";
-        //filePath = requireActivity().getExternalFilesDir(Environment.DIRECTORY_MUSIC).getPath() + "/Music/audioMP4" + System.currentTimeMillis() + ".mp4";
-        filePath = Environment.getExternalStorageDirectory().getPath() + "/Music/audioMP4" + System.currentTimeMillis() + ".mp4";
+        //filePath = requireActivity().getExternalCacheDir().getAbsolutePath()+ "/audioMP4" + System.currentTimeMillis() + ".mp4";
+        //filePath = requireActivity().getFilesDir().getPath() + "/Music/mp4Test/audioMP4" + System.currentTimeMillis() + ".mp4";
+        //filePath = requireActivity().getExternalFilesDir(null).getPath() + "/Music/mp4Test/audioMP4" + System.currentTimeMillis() + ".mp4";
+        //filePath = requireActivity().getExternalFilesDir(Environment.DIRECTORY_MUSIC).getPath() + "/Music/mp4Test/audioMP4" + System.currentTimeMillis() + ".mp4";
+        filePath = Environment.getExternalStorageDirectory().getPath() + "/Music/mp4Test/audioMP4" + System.currentTimeMillis() + ".mp4";
         audioFile = new File(filePath);
     }
 

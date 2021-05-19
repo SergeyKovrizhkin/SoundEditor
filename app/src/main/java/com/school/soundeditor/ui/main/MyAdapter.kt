@@ -11,7 +11,6 @@ import com.school.soundeditor.RecyclerSavedListData
 import com.school.soundeditor.ui.base.BaseViewHolder
 import com.school.soundeditor.ui.main.data.BaseData
 import com.school.soundeditor.ui.main.data.HeaderData
-import com.school.soundeditor.ui.main.data.MovieData
 import com.school.soundeditor.ui.main.data.TrackData
 
 //class vs inner class
@@ -34,11 +33,6 @@ class MyAdapter(
                     .inflate(R.layout.track_item_layout, parent, false)
                 TrackViewHolder(itemView)
             }
-            TYPE_MOVIE -> {
-                val itemView = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.movie_item_layout, parent, false)
-                MovieViewHolder(itemView)
-            }
             else -> {
                 val itemView = LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_footer, parent, false)
@@ -57,7 +51,6 @@ class MyAdapter(
         return when (dataList.data[position]) {
             is HeaderData -> TYPE_HEADER
             is TrackData -> TYPE_TRACK
-            is MovieData -> TYPE_MOVIE
             else -> TYPE_FOOTER
         }
     }
@@ -133,66 +126,6 @@ class MyAdapter(
         }
     }
 
-    inner class MovieViewHolder(itemView: View) : BaseViewHolder(itemView) {
-        override fun onBind(itemData: BaseData) {
-            itemData as MovieData
-            itemView.setOnClickListener {
-                listener.onClick(itemData)
-            }
-            itemView.findViewById<TextView>(R.id.movie_name_text_view).text = itemData.name
-            itemView.findViewById<TextView>(R.id.movie_producer_text_view).text =
-                itemData.producer
-            itemView.findViewById<TextView>(R.id.movie_duration_text_view).text =
-                itemData.duration
-            itemView.findViewById<TextView>(R.id.movie_format_text_view).text = itemData.format
-            itemView.findViewById<ImageView>(R.id.movie_image).setImageResource(itemData.image)
-            itemView.findViewById<TextView>(R.id.starring_text_view).text = itemData.starring
-            itemView.findViewById<ImageView>(R.id.add_button).setOnClickListener {
-                dataList.data.add(layoutPosition, getNewMovieItem())
-                notifyItemInserted(layoutPosition + 1)
-            }
-            itemView.findViewById<ImageView>(R.id.remove_button).setOnClickListener {
-                dataList.data.removeAt(layoutPosition)
-                notifyItemRemoved(layoutPosition)
-            }
-            itemView.findViewById<ImageView>(R.id.move_up_button).setOnClickListener {
-                moveUp()
-            }
-            itemView.findViewById<ImageView>(R.id.move_down_button).setOnClickListener {
-                moveDown()
-            }
-        }
-
-        private fun getNewMovieItem(): BaseData {
-            return MovieData(
-                "Modern Times",
-                "Charlie Chaplin",
-                "87 min",
-                "avi",
-                R.drawable.moderntimes,
-                "Charles Chaplin\nPaulette Goddard"
-            )
-        }
-
-        private fun moveUp() {
-            layoutPosition.takeIf { it > 1 }?.also { currentPosition ->
-                val element = dataList.data[currentPosition]
-                dataList.data.removeAt(currentPosition)
-                dataList.data.add(currentPosition - 1, element)
-                notifyItemMoved(currentPosition, currentPosition - 1)
-            }
-        }
-
-        private fun moveDown() {
-            layoutPosition.takeIf { it < dataList.data.size - 2 }?.also { currentPosition ->
-                val element = dataList.data[currentPosition]
-                dataList.data.removeAt(currentPosition)
-                dataList.data.add(currentPosition + 1, element)
-                notifyItemMoved(currentPosition, currentPosition + 1)
-            }
-        }
-    }
-
     inner class FooterViewHolder(itemView: View) : BaseViewHolder(itemView) {
         override fun onBind(itemData: BaseData) {
             itemView.setOnClickListener {
@@ -208,7 +141,6 @@ class MyAdapter(
     companion object {
         const val TYPE_HEADER: Int = 0
         const val TYPE_TRACK: Int = 1
-        const val TYPE_MOVIE: Int = 2
         const val TYPE_FOOTER: Int = 3
     }
 }

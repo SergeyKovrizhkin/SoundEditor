@@ -10,7 +10,6 @@ import com.school.soundeditor.ui.main.MainFragment
 import com.school.soundeditor.ui.main.MainPresenter
 import com.school.soundeditor.ui.main.MainScreenView
 import com.school.soundeditor.ui.main.data.BaseData
-import com.school.soundeditor.ui.main.data.MovieData
 import com.school.soundeditor.ui.main.data.TrackData
 import com.school.soundeditor.ui.main.listeners.OnSaveData
 import com.school.soundeditor.ui.main.listeners.OnSaveScrollingPosition
@@ -82,7 +81,7 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
         val mainFragment = MainFragment.newInstance(dataList, savedScrollingPosition)
         mainFragment.setListener(object : ShowItemForPlayback {
             override fun onShow(itemData: BaseData) {
-                if (itemData is TrackData || itemData is MovieData) {
+                if (itemData is TrackData) {
                     this@MainActivity.itemSelected = itemData
                     bottomNavigation.selectedItemId = R.id.to_playback_item
                 }

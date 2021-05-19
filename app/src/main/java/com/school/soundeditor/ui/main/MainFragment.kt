@@ -20,7 +20,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.school.soundeditor.R
 import com.school.soundeditor.RecyclerSavedListData
 import com.school.soundeditor.ShowItemForPlayback
-import com.school.soundeditor.ui.main.data.*
+import com.school.soundeditor.ui.main.data.BaseData
+import com.school.soundeditor.ui.main.data.FooterData
+import com.school.soundeditor.ui.main.data.HeaderData
+import com.school.soundeditor.ui.main.data.TrackData
 import com.school.soundeditor.ui.main.listeners.OnSaveData
 import com.school.soundeditor.ui.main.listeners.OnSaveScrollingPosition
 import kotlinx.android.synthetic.main.fragment_main.*
@@ -202,7 +205,6 @@ internal class MainFragment : Fragment(), MainScreenView {
         )
     }
 
-
     private fun getTrackList(): RecyclerSavedListData {
         val data: MutableList<BaseData> = mutableListOf(
             HeaderData(),
@@ -213,13 +215,12 @@ internal class MainFragment : Fragment(), MainScreenView {
                 "Mp3",
                 R.drawable.bohemian
             ),
-            MovieData(
-                "Modern Times",
-                "Charlie Chaplin",
-                "87 min",
-                "avi",
-                R.drawable.moderntimes,
-                "Charles Chaplin\nPaulette Goddard"
+            TrackData(
+                "Empty name",
+                "Empty performer",
+                "Empty duration",
+                "Empty format",
+                R.drawable.sample_image
             )
         )
         data.add(FooterData())
