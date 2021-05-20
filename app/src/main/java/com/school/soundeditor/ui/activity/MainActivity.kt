@@ -1,6 +1,7 @@
 package com.school.soundeditor.ui.activity
 
 import android.os.Bundle
+import android.os.Environment
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
@@ -17,6 +18,11 @@ import com.school.soundeditor.ui.playback.PlaybackFragment
 import com.school.soundeditor.ui.record.RecordFragment
 import com.school.soundeditor.ui.record.RecorderDialogFragment
 import kotlinx.android.synthetic.main.activity_main.*
+import zeroonezero.android.audio_mixer.AudioMixer
+import zeroonezero.android.audio_mixer.input.AudioInput
+import zeroonezero.android.audio_mixer.input.BlankAudioInput
+import zeroonezero.android.audio_mixer.input.GeneralAudioInput
+
 
 internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSave, OnExit,
     RecorderDialogFragment.OnRecordingSavedListener {
@@ -166,5 +172,91 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
         private const val EQUALIZER_FRAGMENT = "EQUALIZER_FRAGMENT"
         private const val RECORD_FRAGMENT = "RECORD_FRAGMENT"
         private const val PLAYBACK_FRAGMENT = "PLAYBACK_FRAGMENT"
+    }
+
+    fun sampleUsage(){
+        val input1: AudioInput = GeneralAudioInput(input1Path)
+        input1.setVolume(0.5f) //Optional
+
+        // It will produce a blank portion of 3 seconds between input1 and input2 if mixing type is sequential.
+        // But it will does nothing in parallel mixing.
+        // It will produce a blank portion of 3 seconds between input1 and input2 if mixing type is sequential.
+        // But it will does nothing in parallel mixing.
+        val blankInput: AudioInput = BlankAudioInput(3000000) //
+
+        val input2: AudioInput = GeneralAudioInput(this, input2Uri, null)
+        input2.startTimeUs = 3000000 //Optional
+
+        input2.endTimeUs = 9000000 //Optional
+
+        //input2.setStartOffsetUs(5000000) //Optional. It is needed to start mixing the input at a certain time.
+
+        val outputPath = (Environment.getDownloadCacheDirectory().absolutePath
+                + "/" + "audio_mixer_output.mp3") // for example
+
+        val audioMixer = AudioMixer(outputPath)
+        audioMixer.addDataSource(input1)
+        audioMixer.addDataSource(blankInput)
+        audioMixer.addDataSource(input2)
+        audioMixer.setSampleRate(44100) // Optional
+
+        audioMixer.setBitRate(128000) // Optional
+
+        audioMixer.setChannelCount(2) // Optional //1(mono) or 2(stereo)
+
+
+        // Smaller audio inputs will be encoded from start-time again if it reaches end-time
+        // It is only valid for parallel mixing
+        //audioMixer.setLoopingEnabled(true);
+
+        // Smaller audio inputs will be encoded from start-time again if it reaches end-time
+        // It is only valid for parallel mixing
+        //audioMixer.setLoopingEnabled(true);
+        audioMixer.setMixingType(AudioMixer.MixingType.PARALLEL) // or AudioMixer.MixingType.SEQUENTIAL
+
+        audioMixer.setProcessingListener(object : AudioMixer.ProcessingListener {
+            override fun onProgress(progress: Double) {
+                runOnUiThread { /*progressDialog.setProgress((progress * 100).toInt())*/ }
+            }
+
+            override fun onEnd() {
+                runOnUiThread {
+                    Toast.makeText(this@MainActivity, "Success!!!", Toast.LENGTH_SHORT).show()
+                    audioMixer.release()
+                }
+            }
+        })
+
+
+        //it is for setting up the all the things
+
+
+        //it is for setting up the all the things
+        audioMixer.start()
+
+        /* These getter methods must be called after calling 'start()'*/
+        //audioMixer.getOutputSampleRate();
+        //audioMixer.getOutputBitRate();
+        //audioMixer.getOutputChannelCount();
+        //audioMixer.getOutputDurationUs();
+
+        //starting real processing
+
+        /* These getter methods must be called after calling 'start()'*/
+        //audioMixer.getOutputSampleRate();
+        //audioMixer.getOutputBitRate();
+        //audioMixer.getOutputChannelCount();
+        //audioMixer.getOutputDurationUs();
+
+        //starting real processing
+        audioMixer.processAsync()
+
+        // We can stop the processing immediately by calling audioMixer.stop() when we want.
+
+        // audioMixer.processSync() is generally not used.
+        // We have to use this carefully.
+        // Tt will do the processing in caller thread
+        // And calling audioMixer.stop() from the same thread won't stop the processing
+
     }
 }

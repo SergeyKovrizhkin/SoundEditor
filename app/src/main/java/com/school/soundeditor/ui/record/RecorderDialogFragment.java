@@ -26,7 +26,6 @@ import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
 /**
  * TODO remove audio output path definition from here, it should be an argument
  */

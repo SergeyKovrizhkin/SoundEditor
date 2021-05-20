@@ -142,6 +142,11 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
         })
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mediaPlayer.reset()
+    }
+
     private fun createNewTrackLayout() {
         container.removeAllViewsInLayout()
         val trackDetailLayout = layoutInflater.inflate(R.layout.track_detail_layout, null)
@@ -200,18 +205,20 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
 
     private val trackTimeRunnable: Runnable = object : Runnable {
         override fun run() {
-            //checks if time passed is less than or equal to the track's duration
-            if (runnableTimeCounter < mediaPlayer.duration) {
-                //check if the track is running
-                if (isAudioFilePlaying) {
-                    seekPlayAudio.progress = mediaPlayer.currentPosition
-                    myHandler.postDelayed(this, 100)
-                    //increment timer by 100ms
-                    runnableTimeCounter += 100
+            seekPlayAudio?.let {
+                //checks if time passed is less than or equal to the track's duration
+                if (runnableTimeCounter < mediaPlayer.duration) {
+                    //check if the track is running
+                    if (isAudioFilePlaying) {
+                        seekPlayAudio.progress = mediaPlayer.currentPosition
+                        myHandler.postDelayed(this, 100)
+                        //increment timer by 100ms
+                        runnableTimeCounter += 100
+                    }
+                } else {
+                    //else the track reached it's end
+                    handleTrackEnd()
                 }
-            } else {
-                //else the track reached it's end
-                handleTrackEnd()
             }
         }
     }
