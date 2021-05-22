@@ -86,6 +86,14 @@
             android:src="@android:drawable/ic_input_add" />
 
         <ImageView
+            android:id="@+id/record_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/record_item_description"
+            android:src="@android:drawable/ic_btn_speak_now" />
+
+        <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

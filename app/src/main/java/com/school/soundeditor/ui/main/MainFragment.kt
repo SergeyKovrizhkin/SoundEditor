@@ -1,6 +1,7 @@
 package com.school.soundeditor.ui.main
 
 import android.Manifest
+import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -13,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -20,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.school.soundeditor.R
 import com.school.soundeditor.RecyclerSavedListData
 import com.school.soundeditor.ShowItemForPlayback
+import com.school.soundeditor.ui.activity.AudioTrimmerActivity
 import com.school.soundeditor.ui.main.data.BaseData
 import com.school.soundeditor.ui.main.data.FooterData
 import com.school.soundeditor.ui.main.data.HeaderData
@@ -27,6 +30,7 @@ import com.school.soundeditor.ui.main.data.TrackData
 import com.school.soundeditor.ui.main.listeners.OnSaveData
 import com.school.soundeditor.ui.main.listeners.OnSaveScrollingPosition
 import kotlinx.android.synthetic.main.fragment_main.*
+
 
 internal class MainFragment : Fragment(), MainScreenView {
 
@@ -37,6 +41,28 @@ internal class MainFragment : Fragment(), MainScreenView {
     private var onSaveDataListener: OnSaveData? = null
     private var onSaveScrollingPositionListener: OnSaveScrollingPosition? = null
     private var fileSrc: String? = null
+
+    private fun requestStoragePermission() {
+        ActivityCompat.requestPermissions(
+            requireActivity(), arrayOf(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.RECORD_AUDIO
+            ),
+            REQUEST_ID_PERMISSIONS
+        )
+    }
+
+    private fun checkStoragePermission(): Boolean {
+        return ActivityCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.RECORD_AUDIO
+                ) == PackageManager.PERMISSION_GRANTED
+    }
+
 
     internal fun setListener(listener: ShowItemForPlayback) {
         this.listener = listener
@@ -89,9 +115,19 @@ internal class MainFragment : Fragment(), MainScreenView {
         add_button.setOnClickListener {
             //checkPermission()
             checkPermission(this)
-
         }
         recyclerView.scrollToPosition(savedScrollingPosition)
+        record_button.setOnClickListener {
+            if (checkStoragePermission()) {
+                startActivityForResult(
+                    Intent(requireContext(), AudioTrimmerActivity::class.java),
+                    ADD_AUDIO
+                )
+                //overridePendingTransition(0, 0)
+            } else {
+                requestStoragePermission()
+            }
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -114,8 +150,14 @@ internal class MainFragment : Fragment(), MainScreenView {
                 }
                 return
             }
-            REQUEST_CODE_CONTACTS -> {
-                // Открываем контакты getContacts()
+            REQUEST_ID_PERMISSIONS -> {
+                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Permission granted, Click again",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
                 return
             }
         }
@@ -134,18 +176,34 @@ internal class MainFragment : Fragment(), MainScreenView {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE_PICK_FILE) {
-            if (data != null) {
-                //get uri from intent returned
-                val uri: Uri? = data.data
-                //get file path of the uri
-                fileSrc = uri?.let { getPath(requireContext(), it) }
-                //update chosen file textView with filesrc
-                Toast.makeText(requireContext(), fileSrc, Toast.LENGTH_LONG).show()
-                //handleFileChosenMediaPlayer(fileSrc)
-                val adapter = recyclerView.adapter as MyAdapter
-                adapter.addListItem(getListItem())
-                recyclerView.scrollToPosition(dataList.data.size - 1)
+        when (requestCode) {
+            REQUEST_CODE_PICK_FILE -> {
+                if (data != null) {
+                    //get uri from intent returned
+                    val uri: Uri? = data.data
+                    //get file path of the uri
+                    fileSrc = uri?.let { getPath(requireContext(), it) }
+                    //update chosen file textView with filesrc
+                    Toast.makeText(requireContext(), fileSrc, Toast.LENGTH_LONG).show()
+                    //handleFileChosenMediaPlayer(fileSrc)
+                    val adapter = recyclerView.adapter as MyAdapter
+                    adapter.addListItem(getListItem())
+                    recyclerView.scrollToPosition(dataList.data.size - 1)
+                }
+            }
+            ADD_AUDIO -> {
+                if (resultCode == RESULT_OK) {
+                    if (data != null) {
+                        //audio trim result will be saved at below path
+                        val path = data.extras!!.getString("INTENT_AUDIO_FILE")
+                        Toast.makeText(
+                            requireContext(),
+                            "Audio stored at $path",
+                            Toast.LENGTH_LONG
+                        )
+                            .show()
+                    }
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -251,7 +309,8 @@ internal class MainFragment : Fragment(), MainScreenView {
         internal const val REQUEST_CODE_PICK_FILE = 10
         private const val ARG_PARAM1 = "param1"
         private const val ARG_PARAM2 = "param2"
-        private const val REQUEST_CODE_CONTACTS = 101
+        private const val ADD_AUDIO = 1001
+        private const val REQUEST_ID_PERMISSIONS = 1
 
         @JvmStatic
         fun newInstance(dataList: RecyclerSavedListData?, savedScrollingPosition: Int) =

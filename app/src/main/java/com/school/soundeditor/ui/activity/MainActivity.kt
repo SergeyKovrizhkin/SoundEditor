@@ -1,7 +1,6 @@
 package com.school.soundeditor.ui.activity
 
 import android.os.Bundle
-import android.os.Environment
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
@@ -18,10 +17,6 @@ import com.school.soundeditor.ui.playback.PlaybackFragment
 import com.school.soundeditor.ui.record.RecordFragment
 import com.school.soundeditor.ui.record.RecorderDialogFragment
 import kotlinx.android.synthetic.main.activity_main.*
-import zeroonezero.android.audio_mixer.AudioMixer
-import zeroonezero.android.audio_mixer.input.AudioInput
-import zeroonezero.android.audio_mixer.input.BlankAudioInput
-import zeroonezero.android.audio_mixer.input.GeneralAudioInput
 
 
 internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSave, OnExit,
@@ -174,7 +169,7 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
         private const val PLAYBACK_FRAGMENT = "PLAYBACK_FRAGMENT"
     }
 
-    fun sampleUsage(){
+    /*fun sampleUsage(){
         val input1: AudioInput = GeneralAudioInput(input1Path)
         input1.setVolume(0.5f) //Optional
 
@@ -216,7 +211,7 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
 
         audioMixer.setProcessingListener(object : AudioMixer.ProcessingListener {
             override fun onProgress(progress: Double) {
-                runOnUiThread { /*progressDialog.setProgress((progress * 100).toInt())*/ }
+                runOnUiThread { *//*progressDialog.setProgress((progress * 100).toInt())*//* }
             }
 
             override fun onEnd() {
@@ -234,7 +229,7 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
         //it is for setting up the all the things
         audioMixer.start()
 
-        /* These getter methods must be called after calling 'start()'*/
+        *//* These getter methods must be called after calling 'start()'*//*
         //audioMixer.getOutputSampleRate();
         //audioMixer.getOutputBitRate();
         //audioMixer.getOutputChannelCount();
@@ -242,7 +237,7 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
 
         //starting real processing
 
-        /* These getter methods must be called after calling 'start()'*/
+        *//* These getter methods must be called after calling 'start()'*//*
         //audioMixer.getOutputSampleRate();
         //audioMixer.getOutputBitRate();
         //audioMixer.getOutputChannelCount();
@@ -258,5 +253,5 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
         // Tt will do the processing in caller thread
         // And calling audioMixer.stop() from the same thread won't stop the processing
 
-    }
+    }*/
 }
