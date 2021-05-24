@@ -1,20 +1,19 @@
 package com.school.soundeditor.ui.activity
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import com.school.soundeditor.*
 import com.school.soundeditor.ui.equalizer.EqualizerFragment
 import com.school.soundeditor.ui.main.MainFragment
-import com.school.soundeditor.ui.main.MainPresenter
 import com.school.soundeditor.ui.main.MainScreenView
 import com.school.soundeditor.ui.main.data.BaseData
 import com.school.soundeditor.ui.main.data.TrackData
 import com.school.soundeditor.ui.main.listeners.OnSaveData
 import com.school.soundeditor.ui.main.listeners.OnSaveScrollingPosition
 import com.school.soundeditor.ui.playback.PlaybackFragment
-import com.school.soundeditor.ui.record.RecordFragment
 import com.school.soundeditor.ui.record.RecorderDialogFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -22,7 +21,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSave, OnExit,
     RecorderDialogFragment.OnRecordingSavedListener {
 
-    private val presenter = MainPresenter(this)
+    //private val presenter = MainPresenter(this)
     private var dataList = RecyclerSavedListData()
     private var savedScrollingPosition = 0
     private var itemSelected: BaseData? = null
@@ -43,12 +42,12 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
                 R.id.main_screen_item -> {
                     openMainFragment(transaction, dataList, savedScrollingPosition)
                 }
-                R.id.equalizer_item -> {
+                /*R.id.equalizer_item -> {
                     openEqualizerFragment(transaction)
                 }
                 R.id.to_record_item -> {
                     openRecordFragment(transaction)
-                }
+                }*/
                 R.id.to_playback_item -> {
                     openPlaybackFragment(transaction, itemSelected)
                 }
@@ -62,6 +61,7 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
 
     override fun onBackPressed() {
         ExitAppDialogFragment().show(supportFragmentManager, "")
+        //supportFragmentManager.popBackStack()
     }
 
     /*private fun getVisibleFragment(): Fragment? {
@@ -79,6 +79,7 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
         dataList: RecyclerSavedListData?,
         savedScrollingPosition: Int
     ) {
+        bottomNavigation.visibility = View.GONE
         val mainFragment = MainFragment.newInstance(dataList, savedScrollingPosition)
         mainFragment.setListener(object : ShowItemForPlayback {
             override fun onShow(itemData: BaseData) {
@@ -101,25 +102,28 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
         transaction.replace(R.id.fragment_container, mainFragment, MAIN_FRAGMENT)
     }
 
-    private fun openEqualizerFragment(transaction: FragmentTransaction) {
+    /*private fun openEqualizerFragment(transaction: FragmentTransaction) {
+        bottomNavigation.visibility = View.VISIBLE
         val equalizerFragment = EqualizerFragment.newInstance("MySwitch")
-        /*equalizerFragment.setListener(object : OnEqualizerSave {
+        *//*equalizerFragment.setListener(object : OnEqualizerSave {
             override fun onSave(name: String) {
                 Toast.makeText(this@MainActivity, name, Toast.LENGTH_SHORT).show()
             }
-        })*/
+        })*//*
         transaction.replace(R.id.fragment_container, equalizerFragment, EQUALIZER_FRAGMENT)
-    }
+    }*/
 
-    private fun openRecordFragment(transaction: FragmentTransaction) {
+    /*private fun openRecordFragment(transaction: FragmentTransaction) {
+        bottomNavigation.visibility = View.VISIBLE
         val recordFragment = RecordFragment.newInstance()
         transaction.replace(R.id.fragment_container, recordFragment, RECORD_FRAGMENT)
-    }
+    }*/
 
     private fun openPlaybackFragment(
         transaction: FragmentTransaction,
         itemData: BaseData?
     ) {
+        bottomNavigation.visibility = View.VISIBLE
         val playbackFragment = PlaybackFragment.newInstance(itemData)
         transaction.replace(R.id.fragment_container, playbackFragment, PLAYBACK_FRAGMENT)
     }

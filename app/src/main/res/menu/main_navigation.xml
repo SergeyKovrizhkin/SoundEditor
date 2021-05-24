@@ -8,12 +8,14 @@
     <item
         android:id="@+id/equalizer_item"
         android:icon="@android:drawable/ic_menu_sort_by_size"
-        android:title="@string/equalizer_item" />
+        android:title="@string/equalizer_item"
+        android:visible="false" />
 
     <item
         android:id="@+id/to_record_item"
         android:icon="@android:drawable/btn_radio"
-        android:title="@string/record_item" />
+        android:title="@string/record_item"
+        android:visible="false" />
 
     <item
         android:id="@+id/to_playback_item"

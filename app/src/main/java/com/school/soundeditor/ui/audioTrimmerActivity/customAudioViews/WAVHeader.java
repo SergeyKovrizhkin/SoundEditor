@@ -1,4 +1,4 @@
-package com.school.soundeditor.customAudioViews;
+package com.school.soundeditor.ui.audioTrimmerActivity.customAudioViews;
 
 public class WAVHeader {
     private byte[] mHeader;          // the complete header.

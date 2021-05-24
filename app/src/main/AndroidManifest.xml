@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activity.AudioTrimmerActivity"
+            android:name=".ui.audioTrimmerActivity.AudioTrimmerActivity"
             android:screenOrientation="fullSensor"
             android:theme="@style/Theme.Transparent" />
     </application>

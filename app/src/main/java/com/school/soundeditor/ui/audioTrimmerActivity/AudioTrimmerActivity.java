@@ -1,4 +1,4 @@
-package com.school.soundeditor.ui.activity;
+package com.school.soundeditor.ui.audioTrimmerActivity;
 
 
 import android.app.ProgressDialog;
@@ -21,10 +21,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.school.soundeditor.R;
-import com.school.soundeditor.customAudioViews.MarkerView;
-import com.school.soundeditor.customAudioViews.SamplePlayer;
-import com.school.soundeditor.customAudioViews.SoundFile;
-import com.school.soundeditor.customAudioViews.WaveformView;
+import com.school.soundeditor.ui.audioTrimmerActivity.customAudioViews.MarkerView;
+import com.school.soundeditor.ui.audioTrimmerActivity.customAudioViews.SamplePlayer;
+import com.school.soundeditor.ui.audioTrimmerActivity.customAudioViews.SoundFile;
+import com.school.soundeditor.ui.audioTrimmerActivity.customAudioViews.WaveformView;
 import com.school.soundeditor.utils.Utility;
 
 import java.io.File;
@@ -296,6 +296,7 @@ public class AudioTrimmerActivity extends AppCompatActivity implements View.OnCl
             } else {
                 Bundle conData = new Bundle();
                 conData.putString("INTENT_AUDIO_FILE", mFile.getAbsolutePath());
+                //conData.putString("INTENT_WAVE_FORM", mFile.getAbsolutePath());
                 Intent intent = new Intent();
                 intent.putExtras(conData);
                 setResult(RESULT_OK, intent);

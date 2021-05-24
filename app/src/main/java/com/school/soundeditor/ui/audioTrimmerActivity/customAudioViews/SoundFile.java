@@ -1,4 +1,4 @@
-package com.school.soundeditor.customAudioViews;
+package com.school.soundeditor.ui.audioTrimmerActivity.customAudioViews;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;

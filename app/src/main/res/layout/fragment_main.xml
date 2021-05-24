@@ -7,7 +7,7 @@
     android:background="@color/white"
     tools:context=".ui.activity.MainActivity">
 
-    <LinearLayout
+    <!--<LinearLayout
         android:id="@+id/topToolsMainScreen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
             android:layout_weight="1"
             android:text="@string/effects_item"
             android:textAlignment="center" />
-    </LinearLayout>
+    </LinearLayout>-->
 
     <LinearLayout
         android:id="@+id/bottomToolsMainScreen"
@@ -116,6 +116,6 @@
         app:layout_constraintBottom_toTopOf="@id/bottomToolsMainScreen"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topToolsMainScreen"
+        app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/track_item_layout" />
 </androidx.constraintlayout.widget.ConstraintLayout>

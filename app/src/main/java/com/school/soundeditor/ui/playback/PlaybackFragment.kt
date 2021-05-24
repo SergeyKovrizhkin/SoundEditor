@@ -39,14 +39,14 @@ import java.util.*
 
 internal class PlaybackFragment : Fragment(), PlaybackScreenView {
 
-    private val presenter: PlaybackScreenPresenter = PlaybackPresenter(this)
+    //private val presenter: PlaybackScreenPresenter = PlaybackPresenter(this)
     private var trackData: BaseData? = null
     private lateinit var mediaPlayer: MediaPlayer
     private val myHandler: Handler = Handler()
     private var runnableTimeCounter = 0
     private var isAudioFilePlaying = false
 
-    private var fileSrc: String? = null
+    private lateinit var fileSrc: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,9 +70,7 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
         tvAudioCurrentPosition.text = getString(R.string.zero_tv_audio_current_position)
 
         createNewTrackLayout()
-        if (fileSrc != null) {
-            setAudioSeekBar()
-        }
+        setAudioSeekBar()
 
         btnTrimAndLoop.setOnClickListener {
             handleTrimAndLoopButtonClick()
@@ -91,13 +89,9 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
 
     private fun getDuration() {
         //get duration of audio file
-        if (fileSrc == null) {
-            Toast.makeText(requireContext(), "Не найден файл на диске", Toast.LENGTH_SHORT).show()
-        } else {
-            val fileDuration = getAudioFileDuration(fileSrc!!)
-            //set seek bar limit to 90% of file duration
-            configureSeekBars(fileDuration - (fileDuration * 0.1).toInt())
-        }
+        val fileDuration = getAudioFileDuration(fileSrc)
+        //set seek bar limit to 90% of file duration
+        configureSeekBars(fileDuration - (fileDuration * 0.1).toInt())
     }
 
     private fun setSeekBarEndTime() {
@@ -158,9 +152,7 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
             data.performer
         trackDetailLayout.findViewById<TextView>(R.id.track_duration_text_view).text =
             data.duration
-        trackDetailLayout.findViewById<TextView>(R.id.track_format_text_view).text =
-            data.format
-        data.fileSrc?.let { handleFileChosenMediaPlayer(it) }
+        handleFileChosenMediaPlayer(data.fileSrc)
         fileSrc = data.fileSrc
         container.addView(trackDetailLayout)
     }
@@ -286,35 +278,24 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
      * Handles trim and loop button click.
      */
     private fun handleTrimAndLoopButtonClick() {
-        if (fileSrc == null) {
-            //if fileSource null tell the user to record an audio or choose a file
+        val tvLoopString = tvLoop.text.toString()
+        val loopNumber = Integer.valueOf(tvLoopString)
+        if (loopNumber == 0) {
             Toast.makeText(
                 requireContext(),
-                "Please record an audio or choose a file",
+                "Please Enter Number Greater than 0",
                 Toast.LENGTH_SHORT
-            )
-                .show()
+            ).show()
             return
-        } else {
-            val tvLoopString = tvLoop.text.toString()
-            val loopNumber = Integer.valueOf(tvLoopString)
-            if (loopNumber == 0) {
-                Toast.makeText(
-                    requireContext(),
-                    "Please Enter Number Greater than 0",
-                    Toast.LENGTH_SHORT
-                ).show()
-                return
-            }
-            val fileDuration = getAudioFileDuration(fileSrc!!)
-            val trimFromStartTime = seekBarStartTime.progress.toDouble()
-            val trimFromEndTime = seekBarEndTime.progress.toDouble()
-            //trim file from start time to end time
-            val endTime = fileDuration - trimFromEndTime
-            trimFile(fileSrc!!, trimFromStartTime / 1000.0, endTime / 1000.0)
-            //loop file
-            loopFile(TRIMMED_FILE, loopNumber)
         }
+        val fileDuration = getAudioFileDuration(fileSrc)
+        val trimFromStartTime = seekBarStartTime.progress.toDouble()
+        val trimFromEndTime = seekBarEndTime.progress.toDouble()
+        //trim file from start time to end time
+        val endTime = fileDuration - trimFromEndTime
+        trimFile(fileSrc, trimFromStartTime / 1000.0, endTime / 1000.0)
+        //loop file
+        loopFile(TRIMMED_FILE, loopNumber)
     }
 
     /**
@@ -576,6 +557,4 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
                 }
             }
     }
-
-    //TODO("Если музыка играет, и пользователь переключается на другой фрагмент, то приложение падает")
 }

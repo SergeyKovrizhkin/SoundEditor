@@ -1,4 +1,4 @@
-package com.school.soundeditor.customAudioViews;
+package com.school.soundeditor.ui.audioTrimmerActivity.customAudioViews;
 
 class Atom {  // note: latest versions of spec simply call it 'box' instead of 'atom'.
     private int mSize;  // includes atom header (8 bytes)
