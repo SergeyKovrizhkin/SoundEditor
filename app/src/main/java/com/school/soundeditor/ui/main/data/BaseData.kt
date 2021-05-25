@@ -1,7 +1,5 @@
 package com.school.soundeditor.ui.main.data
 
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import java.io.Serializable
 
-@Parcelize
-open class BaseData : Parcelable
+open class BaseData : Serializable

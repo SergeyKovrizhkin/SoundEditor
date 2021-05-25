@@ -19,13 +19,13 @@ import com.school.soundeditor.R
 import com.school.soundeditor.RecyclerSavedListData
 import com.school.soundeditor.ShowItemForPlayback
 import com.school.soundeditor.ui.audioTrimmerActivity.AudioTrimmerActivity
+import com.school.soundeditor.ui.audioTrimmerActivity.customAudioViews.SoundFile
 import com.school.soundeditor.ui.main.data.BaseData
 import com.school.soundeditor.ui.main.data.HeaderData
 import com.school.soundeditor.ui.main.data.TrackData
 import com.school.soundeditor.ui.main.listeners.OnSaveData
 import com.school.soundeditor.ui.main.listeners.OnSaveScrollingPosition
 import kotlinx.android.synthetic.main.fragment_main.*
-
 
 internal class MainFragment : Fragment(), MainScreenView {
 
@@ -158,7 +158,8 @@ internal class MainFragment : Fragment(), MainScreenView {
             name = c.getString(c.getColumnIndex(MediaStore.Audio.Media.TITLE))
             //c.getString(c.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME))
             //c.getString(c.getColumnIndex(MediaStore.Audio.Media.DATA))
-            duration = (c.getString(c.getColumnIndex(MediaStore.Audio.Media.DURATION))).toInt()/1000
+            duration =
+                (c.getString(c.getColumnIndex(MediaStore.Audio.Media.DURATION))).toInt() / 1000
             //c.getString(c.getColumnIndex(MediaStore.Audio.Media.YEAR))
         }
 
@@ -173,7 +174,8 @@ internal class MainFragment : Fragment(), MainScreenView {
             performer,
             durationForShow,
             R.drawable.sample_image,
-            path
+            path,
+            SoundFile.create(path, null)
         )
     }
 
@@ -198,8 +200,9 @@ internal class MainFragment : Fragment(), MainScreenView {
                 if (resultCode == RESULT_OK) {
                     if (data != null) {
                         val extras = data.extras
-                        val path = data.extras?.getString("INTENT_AUDIO_FILE")
-                        val waveFormData = data.extras?.getString("INTENT_WAVE_FORM")
+                        val path =
+                            extras?.getString(AudioTrimmerActivity.RECORDED_AUDIO_FILE_PATH_EXTRA)
+                        //val soundFile: SoundFile = extras?.getSerializable(AudioTrimmerActivity.RECORDED_SOUND_FILE_EXTRA) as SoundFile
                         Toast.makeText(
                             requireContext(),
                             "Audio stored at $path",

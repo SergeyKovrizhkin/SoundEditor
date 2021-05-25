@@ -15,13 +15,14 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 import java.util.Arrays;
 
-public class SoundFile {
+public class SoundFile implements Serializable {
     private ProgressListener mProgressListener = null;
     private File mInputFile = null;
 

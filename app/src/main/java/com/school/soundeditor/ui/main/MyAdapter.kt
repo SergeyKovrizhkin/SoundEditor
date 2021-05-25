@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.school.soundeditor.R
 import com.school.soundeditor.RecyclerSavedListData
+import com.school.soundeditor.ui.audioTrimmerActivity.customAudioViews.WaveformView
 import com.school.soundeditor.ui.base.BaseViewHolder
 import com.school.soundeditor.ui.main.data.BaseData
 import com.school.soundeditor.ui.main.data.HeaderData
@@ -69,6 +70,7 @@ class MyAdapter(
                 listener.onClick(itemData)
             }
             itemView.findViewById<TextView>(R.id.track_name_text_view).text = itemData.name
+            itemView.findViewById<WaveformView>(R.id.audioWaveform).setSoundFile(itemData.soundFile)
             itemView.findViewById<TextView>(R.id.track_performer_text_view).text =
                 itemData.performer
             itemView.findViewById<TextView>(R.id.track_duration_text_view).text =

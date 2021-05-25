@@ -58,7 +58,7 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
-            trackData = it.getParcelable(TRACK_DATA_EXTRA)
+            trackData = it.getSerializable(TRACK_DATA_EXTRA) as BaseData
         }
         init()
     }
@@ -553,7 +553,7 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
         fun newInstance(trackData: BaseData?) =
             PlaybackFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(TRACK_DATA_EXTRA, trackData)
+                    putSerializable(TRACK_DATA_EXTRA, trackData)
                 }
             }
     }

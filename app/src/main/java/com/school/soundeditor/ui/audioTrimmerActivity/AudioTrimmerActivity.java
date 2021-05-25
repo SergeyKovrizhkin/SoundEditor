@@ -35,6 +35,9 @@ public class AudioTrimmerActivity extends AppCompatActivity implements View.OnCl
         MarkerView.MarkerListener,
         WaveformView.WaveformListener {
 
+    public static final String RECORDED_AUDIO_FILE_PATH_EXTRA = "INTENT_AUDIO_FILE";
+    public static final String RECORDED_SOUND_FILE_EXTRA = "SOUND_FILE_EXTRA";
+
     /* Audio trimmer*/
 
     private TextView txtAudioCancel;
@@ -295,7 +298,8 @@ public class AudioTrimmerActivity extends AppCompatActivity implements View.OnCl
                 saveRingtone(1);
             } else {
                 Bundle conData = new Bundle();
-                conData.putString("INTENT_AUDIO_FILE", mFile.getAbsolutePath());
+                conData.putString(RECORDED_AUDIO_FILE_PATH_EXTRA, mFile.getAbsolutePath());
+                conData.putSerializable(RECORDED_SOUND_FILE_EXTRA, mRecordedSoundFile);
                 //conData.putString("INTENT_WAVE_FORM", mFile.getAbsolutePath());
                 Intent intent = new Intent();
                 intent.putExtras(conData);
@@ -963,7 +967,7 @@ public class AudioTrimmerActivity extends AppCompatActivity implements View.OnCl
                     public void run() {
                         afterSavingRingtone("AUDIO_TEMP",
                                 finalOutPath,
-                                duration, finish);
+                                duration * 1000, finish);
                     }
                 };
                 mHandler.post(runnable);
@@ -1005,7 +1009,8 @@ public class AudioTrimmerActivity extends AppCompatActivity implements View.OnCl
             loadFromFile(outPath);
         } else if (finish == 1) {
             Bundle conData = new Bundle();
-            conData.putString("INTENT_AUDIO_FILE", outPath);
+            conData.putString(RECORDED_AUDIO_FILE_PATH_EXTRA, outPath);
+            //conData.putSerializable(RECORDED_SOUND_FILE_EXTRA, mRecordedSoundFile);
             Intent intent = getIntent();
             intent.putExtras(conData);
             setResult(RESULT_OK, intent);
