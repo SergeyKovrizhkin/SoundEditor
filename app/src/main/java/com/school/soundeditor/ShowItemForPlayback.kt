@@ -1,7 +1,7 @@
 package com.school.soundeditor
 
-import com.school.soundeditor.ui.main.data.BaseData
+import com.school.soundeditor.ui.main.data.TrackData
 
 interface ShowItemForPlayback {
-    fun onShow(itemData: BaseData)
+    fun onShow(itemData: TrackData)
 }

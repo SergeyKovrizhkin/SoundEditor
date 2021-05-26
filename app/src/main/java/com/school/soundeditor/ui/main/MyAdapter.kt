@@ -10,8 +10,6 @@ import com.school.soundeditor.R
 import com.school.soundeditor.RecyclerSavedListData
 import com.school.soundeditor.ui.audioTrimmerActivity.customAudioViews.WaveformView
 import com.school.soundeditor.ui.base.BaseViewHolder
-import com.school.soundeditor.ui.main.data.BaseData
-import com.school.soundeditor.ui.main.data.HeaderData
 import com.school.soundeditor.ui.main.data.TrackData
 
 //class vs inner class
@@ -23,18 +21,9 @@ class MyAdapter(
     RecyclerView.Adapter<BaseViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
-        return when (viewType) {
-            TYPE_HEADER -> {
-                val itemView = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_header, parent, false)
-                HeaderViewHolder(itemView)
-            }
-            else -> {
-                val itemView = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.track_item_layout, parent, false)
-                TrackViewHolder(itemView)
-            }
-        }
+        val itemView = LayoutInflater.from(parent.context)
+            .inflate(R.layout.track_item_layout, parent, false)
+        return TrackViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
@@ -45,27 +34,17 @@ class MyAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (dataList.data[position]) {
-            is HeaderData -> TYPE_HEADER
             else -> TYPE_TRACK
         }
     }
 
-    fun addListItem(listItem: BaseData) {
+    fun addListItem(listItem: TrackData) {
         dataList.data.add(dataList.data.size, listItem)
         notifyDataSetChanged()
     }
 
-    inner class HeaderViewHolder(itemView: View) : BaseViewHolder(itemView) {
-        override fun onBind(itemData: BaseData) {
-            itemView.setOnClickListener {
-                listener.onClick(itemData)
-            }
-        }
-    }
-
     inner class TrackViewHolder(itemView: View) : BaseViewHolder(itemView) {
-        override fun onBind(itemData: BaseData) {
-            itemData as TrackData
+        override fun onBind(itemData: TrackData) {
             itemView.setOnClickListener {
                 listener.onClick(itemData)
             }
@@ -84,11 +63,10 @@ class MyAdapter(
     }
 
     interface OnClickListener {
-        fun onClick(itemData: BaseData)
+        fun onClick(itemData: TrackData)
     }
 
     companion object {
-        const val TYPE_HEADER: Int = 0
         const val TYPE_TRACK: Int = 1
     }
 }

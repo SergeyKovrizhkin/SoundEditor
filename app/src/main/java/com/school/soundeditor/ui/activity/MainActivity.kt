@@ -9,7 +9,6 @@ import com.school.soundeditor.*
 import com.school.soundeditor.ui.equalizer.EqualizerFragment
 import com.school.soundeditor.ui.main.MainFragment
 import com.school.soundeditor.ui.main.MainScreenView
-import com.school.soundeditor.ui.main.data.BaseData
 import com.school.soundeditor.ui.main.data.TrackData
 import com.school.soundeditor.ui.main.listeners.OnSaveData
 import com.school.soundeditor.ui.main.listeners.OnSaveScrollingPosition
@@ -24,7 +23,7 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
     //private val presenter = MainPresenter(this)
     private var dataList = RecyclerSavedListData()
     private var savedScrollingPosition = 0
-    private var itemSelected: BaseData? = null
+    private var itemSelected: TrackData? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +81,7 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
         bottomNavigation.visibility = View.GONE
         val mainFragment = MainFragment.newInstance(dataList, savedScrollingPosition)
         mainFragment.setListener(object : ShowItemForPlayback {
-            override fun onShow(itemData: BaseData) {
+            override fun onShow(itemData: TrackData) {
                 if (itemData is TrackData) {
                     this@MainActivity.itemSelected = itemData
                     bottomNavigation.selectedItemId = R.id.to_playback_item
@@ -121,7 +120,7 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
 
     private fun openPlaybackFragment(
         transaction: FragmentTransaction,
-        itemData: BaseData?
+        itemData: TrackData?
     ) {
         bottomNavigation.visibility = View.VISIBLE
         val playbackFragment = PlaybackFragment.newInstance(itemData)

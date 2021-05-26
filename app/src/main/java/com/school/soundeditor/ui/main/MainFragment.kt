@@ -20,12 +20,11 @@ import com.school.soundeditor.RecyclerSavedListData
 import com.school.soundeditor.ShowItemForPlayback
 import com.school.soundeditor.ui.audioTrimmerActivity.AudioTrimmerActivity
 import com.school.soundeditor.ui.audioTrimmerActivity.customAudioViews.SoundFile
-import com.school.soundeditor.ui.main.data.BaseData
-import com.school.soundeditor.ui.main.data.HeaderData
 import com.school.soundeditor.ui.main.data.TrackData
 import com.school.soundeditor.ui.main.listeners.OnSaveData
 import com.school.soundeditor.ui.main.listeners.OnSaveScrollingPosition
 import kotlinx.android.synthetic.main.fragment_main.*
+
 
 internal class MainFragment : Fragment(), MainScreenView {
 
@@ -74,7 +73,7 @@ internal class MainFragment : Fragment(), MainScreenView {
 
     private fun initView() {
         adapter = MyAdapter(dataList, object : MyAdapter.OnClickListener {
-            override fun onClick(itemData: BaseData) {
+            override fun onClick(itemData: TrackData) {
                 listener?.onShow(itemData)
             }
         })
@@ -129,10 +128,10 @@ internal class MainFragment : Fragment(), MainScreenView {
         }
     }
 
-    private fun getListItem(path: String): BaseData {
+    private fun getListItem(path: String): TrackData {
         //val myUri = MediaStore.Audio.Media.getContentUriForPath(fileSrc)
         //val path: String = File(URI(path).getPath()).getCanonicalPath()
-        val c = context!!.contentResolver.query(
+        val cursor = context?.contentResolver?.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, arrayOf(
                 MediaStore.Audio.Media.ALBUM,
                 MediaStore.Audio.Media.ARTIST,
@@ -151,15 +150,14 @@ internal class MainFragment : Fragment(), MainScreenView {
         var name = ""
         var performer = ""
         var duration = 0
-        while (c!!.moveToNext()) {
+        while (cursor!!.moveToNext()) {
             //c.getString(c.getColumnIndex(MediaStore.Audio.Media.ALBUM))
-            performer = c.getString(c.getColumnIndex(MediaStore.Audio.Media.ARTIST))
+            performer = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))
             //c.getString(c.getColumnIndex(MediaStore.Audio.Media.TRACK))
-            name = c.getString(c.getColumnIndex(MediaStore.Audio.Media.TITLE))
+            name = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
             //c.getString(c.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME))
             //c.getString(c.getColumnIndex(MediaStore.Audio.Media.DATA))
-            duration =
-                (c.getString(c.getColumnIndex(MediaStore.Audio.Media.DURATION))).toInt() / 1000
+            duration = (cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION))).toInt()/1000
             //c.getString(c.getColumnIndex(MediaStore.Audio.Media.YEAR))
         }
 
@@ -220,9 +218,7 @@ internal class MainFragment : Fragment(), MainScreenView {
     }
 
     private fun getTrackList(): RecyclerSavedListData {
-        val data: MutableList<BaseData> = mutableListOf(
-            HeaderData()
-        )
+        val data: MutableList<TrackData> = mutableListOf()
         val dataList = RecyclerSavedListData()
         dataList.data = data
         return dataList

@@ -27,7 +27,6 @@ import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator
 import com.googlecode.mp4parser.authoring.tracks.AppendTrack
 import com.googlecode.mp4parser.authoring.tracks.CroppedTrack
 import com.school.soundeditor.R
-import com.school.soundeditor.ui.main.data.BaseData
 import com.school.soundeditor.ui.main.data.TrackData
 import kotlinx.android.synthetic.main.fragment_playback.*
 import java.io.File
@@ -40,7 +39,7 @@ import java.util.*
 internal class PlaybackFragment : Fragment(), PlaybackScreenView {
 
     //private val presenter: PlaybackScreenPresenter = PlaybackPresenter(this)
-    private var trackData: BaseData? = null
+    private var trackData: TrackData? = null
     private lateinit var mediaPlayer: MediaPlayer
     private val myHandler: Handler = Handler()
     private var runnableTimeCounter = 0
@@ -58,7 +57,7 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
-            trackData = it.getSerializable(TRACK_DATA_EXTRA) as BaseData
+            trackData = it.getParcelable(TRACK_DATA_EXTRA)
         }
         init()
     }
@@ -550,10 +549,10 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
         )
 
         @JvmStatic
-        fun newInstance(trackData: BaseData?) =
+        fun newInstance(trackData: TrackData?) =
             PlaybackFragment().apply {
                 arguments = Bundle().apply {
-                    putSerializable(TRACK_DATA_EXTRA, trackData)
+                    putParcelable(TRACK_DATA_EXTRA, trackData)
                 }
             }
     }
