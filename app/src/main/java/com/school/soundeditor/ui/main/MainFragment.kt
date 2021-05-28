@@ -23,7 +23,9 @@ import com.school.soundeditor.ui.audioTrimmerActivity.customAudioViews.SoundFile
 import com.school.soundeditor.ui.main.data.TrackData
 import com.school.soundeditor.ui.main.listeners.OnSaveData
 import com.school.soundeditor.ui.main.listeners.OnSaveScrollingPosition
+import com.school.soundeditor.ui.main.mixer.MixerHelper
 import kotlinx.android.synthetic.main.fragment_main.*
+import java.util.*
 
 
 internal class MainFragment : Fragment(), MainScreenView {
@@ -35,6 +37,8 @@ internal class MainFragment : Fragment(), MainScreenView {
     private var onSaveDataListener: OnSaveData? = null
     private var onSaveScrollingPositionListener: OnSaveScrollingPosition? = null
     private lateinit var adapter: MyAdapter
+
+    private val inputs: MutableList<Uri> = ArrayList()
 
     internal fun setListener(listener: ShowItemForPlayback) {
         this.listener = listener
@@ -84,13 +88,17 @@ internal class MainFragment : Fragment(), MainScreenView {
                 LinearLayoutManager.VERTICAL
             )
         )
+        recyclerView.scrollToPosition(savedScrollingPosition)
+
         add_button.setOnClickListener {
             //checkPermission()
             checkPermissionReadStorage(this)
         }
-        recyclerView.scrollToPosition(savedScrollingPosition)
         record_button.setOnClickListener {
             checkMicrophone(this)
+        }
+        saveButton.setOnClickListener {
+            MixerHelper.startMixing(requireActivity(), inputs)
         }
     }
 
@@ -157,7 +165,8 @@ internal class MainFragment : Fragment(), MainScreenView {
             name = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
             //c.getString(c.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME))
             //c.getString(c.getColumnIndex(MediaStore.Audio.Media.DATA))
-            duration = (cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION))).toInt()/1000
+            duration =
+                (cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION))).toInt() / 1000
             //c.getString(c.getColumnIndex(MediaStore.Audio.Media.YEAR))
         }
 
@@ -186,7 +195,10 @@ internal class MainFragment : Fragment(), MainScreenView {
                     //val ddata = data.data
                     val uri: Uri? = data.data
                     //get file path of the uri
-                    val fileSrc = uri?.let { getPath(requireContext(), it) }
+                    val fileSrc = uri?.let {
+                        inputs.add(it)
+                        getPath(requireContext(), it)
+                    }
                     //update chosen file textView with filesrc
                     Toast.makeText(requireContext(), fileSrc, Toast.LENGTH_LONG).show()
                     //handleFileChosenMediaPlayer(fileSrc)
