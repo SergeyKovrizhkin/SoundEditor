@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
-            android:text="@string/trim" />
+            android:text="@string/trim_button_text" />
 
 
         <LinearLayout
@@ -61,58 +61,15 @@
                     android:layout_height="wrap_content" />
 
             </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:text="@string/loop" />
-
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp">
-
-                <Button
-                    android:id="@+id/btnSubtract"
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:layout_margin="2dp"
-                    android:background="@drawable/shape_circle_white"
-                    android:text="@string/minus" />
-
-                <TextView
-                    android:id="@+id/tvLoop"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:inputType="number"
-                    android:text="1" />
-
-                <Button
-                    android:id="@+id/btnAdd"
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:layout_margin="2dp"
-                    android:background="@drawable/shape_circle_white"
-                    android:text="@string/plus" />
-
-            </LinearLayout>
-
         </LinearLayout>
 
         <Button
-            android:id="@+id/btnTrimAndLoop"
+            android:id="@+id/btnTrim"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
-            android:text="Trim and Loop" />
+            android:text="@string/trim_button_text" />
 
         <TextView
             android:id="@+id/tvSavedFile"
@@ -175,12 +132,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <ImageView
+        <!--<ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/settings_item_description"
-            android:src="@android:drawable/ic_menu_preferences" />
+            android:src="@android:drawable/ic_menu_preferences" />-->
     </LinearLayout>
 
     <FrameLayout

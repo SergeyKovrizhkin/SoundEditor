@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     tools:context=".ui.activity.MainActivity">
 
-    <!--<LinearLayout
+    <LinearLayout
         android:id="@+id/topToolsMainScreen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -58,7 +57,7 @@
             android:layout_weight="1"
             android:text="@string/effects_item"
             android:textAlignment="center" />
-    </LinearLayout>-->
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/bottomToolsMainScreen"
@@ -94,7 +93,7 @@
             android:contentDescription="@string/record_item_description"
             android:src="@android:drawable/ic_btn_speak_now" />
 
-        <ImageView
+        <!--<ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -106,7 +105,15 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/settings_item_description"
-            android:src="@android:drawable/ic_menu_preferences" />
+            android:src="@android:drawable/ic_menu_preferences" />-->
+
+        <ImageView
+            android:id="@+id/info_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/info_button_description"
+            android:src="@android:drawable/ic_menu_help" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -117,6 +124,6 @@
         app:layout_constraintBottom_toTopOf="@id/bottomToolsMainScreen"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topToolsMainScreen"
         tools:listitem="@layout/track_item_layout" />
 </androidx.constraintlayout.widget.ConstraintLayout>

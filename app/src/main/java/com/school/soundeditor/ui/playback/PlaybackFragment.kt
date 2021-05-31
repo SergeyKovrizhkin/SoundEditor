@@ -2,6 +2,7 @@ package com.school.soundeditor.ui.playback
 
 import android.Manifest
 import android.app.Activity
+import android.content.ContentValues
 import android.content.pm.PackageManager
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
@@ -9,6 +10,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
+import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +30,10 @@ import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator
 import com.googlecode.mp4parser.authoring.tracks.AppendTrack
 import com.googlecode.mp4parser.authoring.tracks.CroppedTrack
 import com.school.soundeditor.R
+import com.school.soundeditor.ui.activity.MainActivity
 import com.school.soundeditor.ui.main.data.TrackData
+import com.school.soundeditor.ui.main.listeners.OnAddUri
+import com.school.soundeditor.utils.Utility
 import kotlinx.android.synthetic.main.fragment_playback.*
 import java.io.File
 import java.io.FileOutputStream
@@ -44,6 +50,7 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
     private val myHandler: Handler = Handler()
     private var runnableTimeCounter = 0
     private var isAudioFilePlaying = false
+    private var onAddUriListener: OnAddUri? = null
 
     private lateinit var fileSrc: String
 
@@ -70,20 +77,21 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
 
         createNewTrackLayout()
         setAudioSeekBar()
-
-        btnTrimAndLoop.setOnClickListener {
+        btnTrim.setOnClickListener {
             handleTrimAndLoopButtonClick()
         }
-        btnAdd.setOnClickListener {
-            addToLoop()
-        }
-        btnSubtract.setOnClickListener {
-            subtractFromLoop()
-        }
-
         setSeekBarStartTime()
         setSeekBarEndTime()
         getDuration()
+    }
+
+    internal fun setOnAddingUriListener(onAddUriListener: OnAddUri) {
+        this.onAddUriListener = onAddUriListener
+    }
+
+    override fun onDetach() {
+        onAddUriListener = null
+        super.onDetach()
     }
 
     private fun getDuration() {
@@ -253,47 +261,16 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
     }
 
     /**
-     * Subtracts one from the value of the loop field.
-     */
-    private fun subtractFromLoop() {
-        var tvLoopNumber = Integer.valueOf(tvLoop.text.toString())
-        if (tvLoopNumber == 1) return
-        tvLoopNumber--
-        val tvLoopText = tvLoopNumber.toString() + ""
-        tvLoop.text = tvLoopText
-    }
-
-    /**
-     * Adds one to the value of the loop field.
-     */
-    private fun addToLoop() {
-        var tvLoopNumber = Integer.valueOf(tvLoop.text.toString())
-        tvLoopNumber++
-        val tvLoopText = tvLoopNumber.toString() + ""
-        tvLoop.text = tvLoopText
-    }
-
-    /**
      * Handles trim and loop button click.
      */
     private fun handleTrimAndLoopButtonClick() {
-        val tvLoopString = tvLoop.text.toString()
-        val loopNumber = Integer.valueOf(tvLoopString)
-        if (loopNumber == 0) {
-            Toast.makeText(
-                requireContext(),
-                "Please Enter Number Greater than 0",
-                Toast.LENGTH_SHORT
-            ).show()
-            return
-        }
         val fileDuration = getAudioFileDuration(fileSrc)
         val trimFromStartTime = seekBarStartTime.progress.toDouble()
         val trimFromEndTime = seekBarEndTime.progress.toDouble()
         //trim file from start time to end time
         val endTime = fileDuration - trimFromEndTime
         trimFile(fileSrc, trimFromStartTime / 1000.0, endTime / 1000.0)
-        //loop file
+        val loopNumber = 1
         loopFile(TRIMMED_FILE, loopNumber)
     }
 
@@ -302,8 +279,9 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
      */
     private fun trimFile(inputFilePath: String, startTime: Double, endTime: Double) {
         try {
+            verifyStoragePermissions(requireActivity())
             // get file from memory
-            val dir = File(Environment.getExternalStorageDirectory(), "Music/mp4Test/")
+            val dir = File(Environment.getExternalStorageDirectory(), MainActivity.OUTPUT_DIR)
             dir.mkdirs()
             val inputFile = File(inputFilePath)
             // create movie from the file
@@ -414,7 +392,7 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
      */
     private fun loopFile(inputFilePath: String, loopNumber: Int) {
         verifyStoragePermissions(requireActivity())
-        val dir = File(Environment.getExternalStorageDirectory(), "/Music/mp4Test/")
+        val dir = File(Environment.getExternalStorageDirectory(), MainActivity.OUTPUT_DIR)
         dir.mkdirs()
         //file which we will work on
         val inputFile = File(dir, inputFilePath)
@@ -465,10 +443,11 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
         }
         try {
             container?.writeContainer(fc)
-            Toast.makeText(requireContext(), "File was saved", Toast.LENGTH_SHORT).show()
             val textToShow = "File Saved: " + outputFile.path
             tvSavedFile.text = textToShow
+            afterSavingFile(LOOPED_FILE,outputFile.path,getAudioFileDuration(outputFile.path))
             handleLoopedFileSaved(outputFile.path)
+            Toast.makeText(requireContext(), "File was saved", Toast.LENGTH_SHORT).show()
         } catch (e: java.lang.Exception) {
             Toast.makeText(requireContext(), "File failed to be saved", Toast.LENGTH_SHORT).show()
         }
@@ -477,6 +456,31 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
         } catch (e: IOException) {
             e.printStackTrace()
         }
+    }
+
+    private fun afterSavingFile(
+        title: CharSequence,
+        outPath: String,
+        duration: Int
+    ) {
+        val outFile = File(outPath)
+        val fileSize = outFile.length()
+        val values = ContentValues()
+        values.put(MediaStore.MediaColumns.DATA, outPath)
+        values.put(MediaStore.MediaColumns.TITLE, title.toString())
+        values.put(MediaStore.MediaColumns.SIZE, fileSize)
+        values.put(MediaStore.MediaColumns.MIME_TYPE, Utility.AUDIO_MIME_TYPE)
+        values.put(MediaStore.Audio.Media.ARTIST, "Test Artist")
+        values.put(MediaStore.Audio.Media.DURATION, duration)
+        values.put(MediaStore.Audio.Media.IS_MUSIC, true)
+        //val extractor = MediaExtractor()
+        //extractor.setDataSource(outPath)
+        //val format = extractor.getTrackFormat(0)
+        //val mSampleRate = format.getInteger(MediaFormat.KEY_SAMPLE_RATE)
+        //Toast.makeText(requireContext(),mSampleRate,Toast.LENGTH_LONG).show()
+        val uri = MediaStore.Audio.Media.getContentUriForPath(outPath)
+        val newUri = uri?.let { onAddUriListener?.onAdd(it, values) }
+        Log.e("final URI >> ", "$newUri >> $outPath")
     }
 
     /**
@@ -541,7 +545,7 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
 
         private const val TRACK_DATA_EXTRA = "param1"
         private const val TRIMMED_FILE = "outputAfterTrim.mp4"
-        private const val LOOPED_FILE = "loopedAfterTrim.mp4"
+        private const val LOOPED_FILE = "finalLoopedAfterTrim.mp4"
         private const val REQUEST_EXTERNAL_STORAGE = 1
         private val permissions = arrayOf(
             Manifest.permission.READ_EXTERNAL_STORAGE,

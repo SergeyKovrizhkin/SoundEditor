@@ -39,12 +39,17 @@
     <string name="remove_description">remove</string>
     <string name="zero_tv_audio_current_position">00:00</string>
     <string name="save">Save</string>
-    <string name="cancel">Cancel</string>
+    <string name="cancel">Отмена</string>
     <string name="_0_00">0:00</string>
     <string name="trim">Trim:</string>
     <string name="loop">Loop:</string>
     <string name="minus">-</string>
     <string name="plus">+</string>
     <string name="looped_file_path">sdcard/mp4Test/mergedFile</string>
-    <string name="upload">Upload</string>
+    <string name="upload">Готово</string>
+    <string name="trim_button_text">Обрезать</string>
+    <string name="edit_text_view">Редактрирование</string>
+    <string name="reset_text_view">Заново</string>
+    <string name="done_text_view">Готово</string>
+    <string name="info_button_description">Справка</string>
 </resources>

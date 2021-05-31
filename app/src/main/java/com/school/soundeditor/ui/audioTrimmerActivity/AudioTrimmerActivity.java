@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.school.soundeditor.R;
+import com.school.soundeditor.ui.activity.MainActivity;
 import com.school.soundeditor.ui.audioTrimmerActivity.customAudioViews.MarkerView;
 import com.school.soundeditor.ui.audioTrimmerActivity.customAudioViews.SamplePlayer;
 import com.school.soundeditor.ui.audioTrimmerActivity.customAudioViews.SoundFile;
@@ -37,6 +38,9 @@ public class AudioTrimmerActivity extends AppCompatActivity implements View.OnCl
 
     public static final String RECORDED_AUDIO_FILE_PATH_EXTRA = "INTENT_AUDIO_FILE";
     public static final String RECORDED_SOUND_FILE_EXTRA = "SOUND_FILE_EXTRA";
+    public static final String NEW_URI_EXTRA = "NEW_URI_EXTRA";
+
+
 
     /* Audio trimmer*/
 
@@ -1010,6 +1014,7 @@ public class AudioTrimmerActivity extends AppCompatActivity implements View.OnCl
         } else if (finish == 1) {
             Bundle conData = new Bundle();
             conData.putString(RECORDED_AUDIO_FILE_PATH_EXTRA, outPath);
+            conData.putParcelable(NEW_URI_EXTRA, newUri);
             //conData.putSerializable(RECORDED_SOUND_FILE_EXTRA, mRecordedSoundFile);
             Intent intent = getIntent();
             intent.putExtras(conData);
@@ -1032,7 +1037,7 @@ public class AudioTrimmerActivity extends AppCompatActivity implements View.OnCl
         if (!externalRootDir.endsWith("/")) {
             externalRootDir += "/";
         }
-        subDir = "media/audio/music/";
+        subDir = MainActivity.OUTPUT_DIR;
         String parentDir = externalRootDir + subDir;
 
         // Create the parent directory

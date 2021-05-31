@@ -11,14 +11,19 @@ import com.school.soundeditor.RecyclerSavedListData
 import com.school.soundeditor.ui.audioTrimmerActivity.customAudioViews.WaveformView
 import com.school.soundeditor.ui.base.BaseViewHolder
 import com.school.soundeditor.ui.main.data.TrackData
-
-//class vs inner class
+import com.school.soundeditor.ui.main.listeners.RemoveItemFromInputs
 
 class MyAdapter(
     val dataList: RecyclerSavedListData,
     val listener: OnClickListener,
 ) :
     RecyclerView.Adapter<BaseViewHolder>() {
+
+    private var onRemoveListener: RemoveItemFromInputs? = null
+
+    internal fun setRemoveListener(listener: RemoveItemFromInputs) {
+        this.onRemoveListener = listener
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -27,6 +32,7 @@ class MyAdapter(
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
+        onRemoveListener?.let { holder.setRemoveListener(it) }
         holder.onBind(dataList.data[position])
     }
 
@@ -44,6 +50,13 @@ class MyAdapter(
     }
 
     inner class TrackViewHolder(itemView: View) : BaseViewHolder(itemView) {
+
+        private var onRemoveListener: RemoveItemFromInputs? = null
+
+        override fun setRemoveListener(listener: RemoveItemFromInputs) {
+            this.onRemoveListener = listener
+        }
+
         override fun onBind(itemData: TrackData) {
             itemView.setOnClickListener {
                 listener.onClick(itemData)
@@ -58,6 +71,7 @@ class MyAdapter(
             itemView.findViewById<ImageView>(R.id.remove_button).setOnClickListener {
                 dataList.data.removeAt(layoutPosition)
                 notifyItemRemoved(layoutPosition)
+                onRemoveListener?.onRemove(layoutPosition)
             }
         }
     }

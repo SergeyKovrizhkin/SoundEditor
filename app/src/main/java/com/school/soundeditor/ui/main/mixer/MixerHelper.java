@@ -8,6 +8,8 @@ import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 
+import com.school.soundeditor.ui.activity.MainActivity;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -18,7 +20,7 @@ import zeroonezero.android.audio_mixer.input.GeneralAudioInput;
 
 public class MixerHelper {
 
-    private static final String outputPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "audio_mixer_output.mp3";
+    private static final String outputPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + MainActivity.OUTPUT_DIR + "audio_mixed_output.mp3";
     private static AudioMixer audioMixer = null;
 
     public static void startMixing(FragmentActivity activity, List<Uri> inputs) {
@@ -41,6 +43,7 @@ public class MixerHelper {
 //                    ai.setStartTimeUs(uri.startTimeUs); // optional
 //                    ai.setEndTimeUs(uri.endTimeUs); // optional
                     //ai.setVolume(0.5f); //optional
+                    Toast.makeText(activity, "added", Toast.LENGTH_SHORT).show();
 
                     audioInput = new GeneralAudioInput(activity, uri, null);
                 } else {

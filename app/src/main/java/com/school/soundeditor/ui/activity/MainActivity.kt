@@ -1,5 +1,7 @@
 package com.school.soundeditor.ui.activity
 
+import android.content.ContentValues
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -10,6 +12,7 @@ import com.school.soundeditor.ui.equalizer.EqualizerFragment
 import com.school.soundeditor.ui.main.MainFragment
 import com.school.soundeditor.ui.main.MainScreenView
 import com.school.soundeditor.ui.main.data.TrackData
+import com.school.soundeditor.ui.main.listeners.OnAddUri
 import com.school.soundeditor.ui.main.listeners.OnSaveData
 import com.school.soundeditor.ui.main.listeners.OnSaveScrollingPosition
 import com.school.soundeditor.ui.playback.PlaybackFragment
@@ -22,8 +25,10 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
 
     //private val presenter = MainPresenter(this)
     private var dataList = RecyclerSavedListData()
+    private var inputs = InputsSavedData()
     private var savedScrollingPosition = 0
     private var itemSelected: TrackData? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,18 +84,17 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
         savedScrollingPosition: Int
     ) {
         bottomNavigation.visibility = View.GONE
-        val mainFragment = MainFragment.newInstance(dataList, savedScrollingPosition)
+        val mainFragment = MainFragment.newInstance(dataList, savedScrollingPosition, inputs)
         mainFragment.setListener(object : ShowItemForPlayback {
             override fun onShow(itemData: TrackData) {
-                if (itemData is TrackData) {
-                    this@MainActivity.itemSelected = itemData
-                    bottomNavigation.selectedItemId = R.id.to_playback_item
-                }
+                this@MainActivity.itemSelected = itemData
+                bottomNavigation.selectedItemId = R.id.to_playback_item
             }
         })
         mainFragment.setOnSaveDataListener(object : OnSaveData {
-            override fun onSave(dataList: RecyclerSavedListData) {
+            override fun onSave(dataList: RecyclerSavedListData, inputs: InputsSavedData) {
                 this@MainActivity.dataList = dataList
+                this@MainActivity.inputs = inputs
             }
         })
         mainFragment.setOnSaveScrollingPositionListener(object : OnSaveScrollingPosition {
@@ -124,6 +128,12 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
     ) {
         bottomNavigation.visibility = View.VISIBLE
         val playbackFragment = PlaybackFragment.newInstance(itemData)
+        playbackFragment.setOnAddingUriListener(object : OnAddUri {
+            override fun onAdd(uri: Uri, values: ContentValues): Uri? {
+                val newUri = getContentResolver().insert(uri, values)
+                return newUri
+            }
+        })
         transaction.replace(R.id.fragment_container, playbackFragment, PLAYBACK_FRAGMENT)
     }
 
@@ -170,6 +180,7 @@ internal class MainActivity : AppCompatActivity(), MainScreenView, OnEqualizerSa
         private const val EQUALIZER_FRAGMENT = "EQUALIZER_FRAGMENT"
         private const val RECORD_FRAGMENT = "RECORD_FRAGMENT"
         private const val PLAYBACK_FRAGMENT = "PLAYBACK_FRAGMENT"
+        public const val OUTPUT_DIR = "SchoolSoundEditor/"
     }
 
     /*fun sampleUsage(){

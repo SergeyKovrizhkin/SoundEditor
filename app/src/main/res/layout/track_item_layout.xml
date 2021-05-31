@@ -6,15 +6,14 @@
     android:padding="8dp">
 
 
-    <ImageButton
+    <ImageView
         android:id="@+id/remove_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/remove_description"
         android:src="@android:drawable/ic_delete"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/track_image" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/track_name_text_view"
@@ -27,7 +26,7 @@
         app:layout_constraintBottom_toTopOf="@id/track_performer_text_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/remove_button"
         app:layout_constraintWidth_max="150dp" />
 
     <TextView
@@ -57,15 +56,6 @@
         app:layout_constraintTop_toBottomOf="@id/track_performer_text_view"
         app:layout_constraintWidth_max="150dp" />
 
-    <ImageView
-        android:id="@+id/track_image"
-        android:layout_width="1dp"
-        android:layout_height="1dp"
-        android:contentDescription="@string/track_image_description"
-        android:src="@drawable/bohemian"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
@@ -78,7 +68,17 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:background="@color/colorWaveformBg"
+        android:clickable="false"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/track_image"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:visibility="invisible"
+        android:background="@color/black"
+        android:contentDescription="@string/track_image_description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
