@@ -52,17 +52,22 @@ class MyAdapter(
     inner class TrackViewHolder(itemView: View) : BaseViewHolder(itemView) {
 
         private var onRemoveListener: RemoveItemFromInputs? = null
+        private lateinit var itemDataForListener: TrackData
 
         override fun setRemoveListener(listener: RemoveItemFromInputs) {
             this.onRemoveListener = listener
         }
 
         override fun onBind(itemData: TrackData) {
+            itemDataForListener = itemData
             itemView.setOnClickListener {
                 listener.onClick(itemData)
             }
+            val waveformView = itemView.findViewById<WaveformView>(R.id.audioWaveform)
+            waveformView.setSoundFile(itemData.soundFile)
+            waveformView.setListener(waveFormListener)
+
             itemView.findViewById<TextView>(R.id.track_name_text_view).text = itemData.name
-            itemView.findViewById<WaveformView>(R.id.audioWaveform).setSoundFile(itemData.soundFile)
             itemView.findViewById<TextView>(R.id.track_performer_text_view).text =
                 itemData.performer
             itemView.findViewById<TextView>(R.id.track_duration_text_view).text =
@@ -72,6 +77,35 @@ class MyAdapter(
                 dataList.data.removeAt(layoutPosition)
                 notifyItemRemoved(layoutPosition)
                 onRemoveListener?.onRemove(layoutPosition)
+            }
+        }
+
+        private val waveFormListener = object : WaveformView.WaveformListener {
+            override fun waveformTouchStart(x: Float) {
+                listener.onClick(itemDataForListener)
+            }
+
+            override fun waveformTouchMove(x: Float) {
+                listener.onClick(itemDataForListener)
+            }
+
+            override fun waveformTouchEnd() {
+                listener.onClick(itemDataForListener)
+            }
+
+            override fun waveformFling(x: Float) {
+                listener.onClick(itemDataForListener)
+            }
+
+            override fun waveformDraw() {
+            }
+
+            override fun waveformZoomIn() {
+                listener.onClick(itemDataForListener)
+            }
+
+            override fun waveformZoomOut() {
+                listener.onClick(itemDataForListener)
             }
         }
     }

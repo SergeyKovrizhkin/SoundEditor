@@ -96,8 +96,9 @@ public class SoundFile implements Serializable {
         if (components.length < 2) {
             return null;
         }
+        //TODO
         if (!Arrays.asList(getSupportedExtensions()).contains(components[components.length - 1])) {
-            return null;
+            return new SoundFile();
         }
         SoundFile soundFile = new SoundFile();
         soundFile.setProgressListener(progressListener);
@@ -132,6 +133,13 @@ public class SoundFile implements Serializable {
     public int getSampleRate() {
         return mSampleRate;
     }
+
+    /*public void setSampleRate() {
+        int rate = mSampleRate;
+        if (mSampleRate <= 0) {
+            mSampleRate = 0;
+        }
+    }*/
 
     public int getChannels() {
         return mChannels;

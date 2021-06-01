@@ -29,6 +29,17 @@ import com.school.soundeditor.ui.main.listeners.RemoveItemFromInputs
 import com.school.soundeditor.ui.main.mixer.MixerHelper
 import kotlinx.android.synthetic.main.fragment_main.*
 
+/*
+* Пока не исправил:
+1) При нажатии на Waveformу, находящуюся в RecyclerView, приложение падает. Как исправить, пока не придумал.
+2) Класс Soundfile не может получить sampleRate из файлов, которые мы ОБРЕЗАЕМ и сохраняем на playbackFragmente. Как исправить, пока не придумал.
+3) У файла, который сохраняется на устройстве в результате работы МИКСЕРА, не добавляются данные о Title, Artist, Duration и т.д. Пока не исправлял.
+
+Исправил:
+1) Inputs корректно добавляются и удаляются.
+2) При записи новосозданный файл корректно добавляется в inputs.
+3) Inputs корректно сохраняются при переходе между экранами.
+* */
 
 internal class MainFragment : Fragment(), MainScreenView {
 
@@ -194,13 +205,15 @@ internal class MainFragment : Fragment(), MainScreenView {
             "${if (minutes < 10) "0" else ""}$minutes:${if (seconds < 10) "0" else ""}$seconds"
 
         //myUri?.encodedUserInfo
+        //val soundFile = SoundFile.
+
         return TrackData(
             name,
             performer,
             durationForShow,
             R.drawable.sample_image,
             path,
-            SoundFile.create(path, null)
+            SoundFile.create(path, null)//.apply { setSampleRate() }
         )
     }
 
@@ -297,7 +310,11 @@ internal class MainFragment : Fragment(), MainScreenView {
         internal const val ADD_AUDIO = 1001
 
         @JvmStatic
-        fun newInstance(dataList: RecyclerSavedListData?, savedScrollingPosition: Int, inputs: InputsSavedData?) =
+        fun newInstance(
+            dataList: RecyclerSavedListData?,
+            savedScrollingPosition: Int,
+            inputs: InputsSavedData?
+        ) =
             MainFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_PARAM1, dataList)

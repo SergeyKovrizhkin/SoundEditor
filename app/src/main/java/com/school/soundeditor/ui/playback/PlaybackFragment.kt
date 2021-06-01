@@ -543,9 +543,10 @@ internal class PlaybackFragment : Fragment(), PlaybackScreenView {
 
     companion object {
 
+        //TODO
         private const val TRACK_DATA_EXTRA = "param1"
-        private const val TRIMMED_FILE = "outputAfterTrim.mp4"
-        private const val LOOPED_FILE = "finalLoopedAfterTrim.mp4"
+        private const val TRIMMED_FILE = "outputAfterTrim.mp3"
+        private const val LOOPED_FILE = "finalLoopedAfterTrim.mp3"
         private const val REQUEST_EXTERNAL_STORAGE = 1
         private val permissions = arrayOf(
             Manifest.permission.READ_EXTERNAL_STORAGE,
