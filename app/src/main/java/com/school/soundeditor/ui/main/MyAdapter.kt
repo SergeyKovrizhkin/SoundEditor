@@ -12,6 +12,7 @@ import com.school.soundeditor.ui.audioTrimmerActivity.customAudioViews.WaveformV
 import com.school.soundeditor.ui.base.BaseViewHolder
 import com.school.soundeditor.ui.main.data.TrackData
 import com.school.soundeditor.ui.main.listeners.RemoveItemFromInputs
+import com.school.soundeditor.ui.main.listeners.SwapItemsInInputs
 
 class MyAdapter(
     val dataList: RecyclerSavedListData,
@@ -20,9 +21,14 @@ class MyAdapter(
     RecyclerView.Adapter<BaseViewHolder>() {
 
     private var onRemoveListener: RemoveItemFromInputs? = null
+    private var onSwapListener: SwapItemsInInputs? = null
 
     internal fun setRemoveListener(listener: RemoveItemFromInputs) {
         this.onRemoveListener = listener
+    }
+
+    internal fun setSwapListener(listener: SwapItemsInInputs) {
+        this.onSwapListener = listener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
@@ -33,6 +39,7 @@ class MyAdapter(
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
         onRemoveListener?.let { holder.setRemoveListener(it) }
+        onSwapListener?.let { holder.setSwapListener(it) }
         holder.onBind(dataList.data[position])
     }
 
@@ -52,10 +59,15 @@ class MyAdapter(
     inner class TrackViewHolder(itemView: View) : BaseViewHolder(itemView) {
 
         private var onRemoveListener: RemoveItemFromInputs? = null
+        private var onSwapListener: SwapItemsInInputs? = null
         private lateinit var itemDataForListener: TrackData
 
         override fun setRemoveListener(listener: RemoveItemFromInputs) {
             this.onRemoveListener = listener
+        }
+
+        override fun setSwapListener(listener: SwapItemsInInputs) {
+            this.onSwapListener = listener
         }
 
         override fun onBind(itemData: TrackData) {
@@ -77,6 +89,32 @@ class MyAdapter(
                 dataList.data.removeAt(layoutPosition)
                 notifyItemRemoved(layoutPosition)
                 onRemoveListener?.onRemove(layoutPosition)
+            }
+            itemView.findViewById<ImageView>(R.id.move_up_button).setOnClickListener {
+                moveUp()
+            }
+            itemView.findViewById<ImageView>(R.id.move_down_button).setOnClickListener {
+                moveDown()
+            }
+        }
+
+        private fun moveUp() {
+            layoutPosition.takeIf { it > 0 }?.also { currentPosition ->
+                val element = dataList.data[currentPosition]
+                dataList.data.removeAt(currentPosition)
+                dataList.data.add(currentPosition - 1, element)
+                onSwapListener?.onSwap(currentPosition, currentPosition - 1)
+                notifyItemMoved(currentPosition, currentPosition - 1)
+            }
+        }
+
+        private fun moveDown() {
+            layoutPosition.takeIf { it < dataList.data.size - 1 }?.also { currentPosition ->
+                val element = dataList.data[currentPosition]
+                dataList.data.removeAt(currentPosition)
+                dataList.data.add(currentPosition + 1, element)
+                onSwapListener?.onSwap(currentPosition, currentPosition + 1)
+                notifyItemMoved(currentPosition, currentPosition + 1)
             }
         }
 

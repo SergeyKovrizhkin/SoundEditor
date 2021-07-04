@@ -15,6 +15,24 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <ImageButton
+        android:id="@+id/move_up_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/move_up_description"
+        android:src="@android:drawable/arrow_up_float"
+        app:layout_constraintBottom_toTopOf="@+id/move_down_button"
+        app:layout_constraintStart_toStartOf="@+id/remove_button" />
+
+    <ImageButton
+        android:id="@+id/move_down_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/move_down_description"
+        android:src="@android:drawable/arrow_down_float"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/move_up_button" />
+
     <TextView
         android:id="@+id/track_name_text_view"
         android:layout_width="wrap_content"
@@ -24,7 +42,7 @@
         android:text="@string/default_track_name"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/track_performer_text_view"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/remove_button"
         app:layout_constraintWidth_max="150dp" />
@@ -38,7 +56,7 @@
         android:text="@string/default_track_performer"
         android:textStyle="italic"
         app:layout_constraintBottom_toTopOf="@id/track_duration_text_view"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@id/track_name_text_view"
         app:layout_constraintWidth_max="150dp" />
@@ -51,7 +69,7 @@
         android:layout_marginEnd="8dp"
         android:text="@string/default_track_duration"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@id/track_performer_text_view"
         app:layout_constraintWidth_max="150dp" />
@@ -61,7 +79,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.4" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.9" />
 
     <com.school.soundeditor.ui.audioTrimmerActivity.customAudioViews.WaveformView
         android:id="@+id/audioWaveform"

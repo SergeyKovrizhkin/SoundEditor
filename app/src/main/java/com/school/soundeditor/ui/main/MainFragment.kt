@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,9 +24,11 @@ import com.school.soundeditor.ShowItemForPlayback
 import com.school.soundeditor.ui.audioTrimmerActivity.AudioTrimmerActivity
 import com.school.soundeditor.ui.audioTrimmerActivity.customAudioViews.SoundFile
 import com.school.soundeditor.ui.main.data.TrackData
+import com.school.soundeditor.ui.main.help.HelpDialogFragment
 import com.school.soundeditor.ui.main.listeners.OnSaveData
 import com.school.soundeditor.ui.main.listeners.OnSaveScrollingPosition
 import com.school.soundeditor.ui.main.listeners.RemoveItemFromInputs
+import com.school.soundeditor.ui.main.listeners.SwapItemsInInputs
 import com.school.soundeditor.ui.main.mixer.MixerHelper
 import kotlinx.android.synthetic.main.fragment_main.*
 
@@ -102,6 +105,15 @@ internal class MainFragment : Fragment(), MainScreenView {
                 }
             }
         })
+        adapter.setSwapListener(object : SwapItemsInInputs {
+            override fun onSwap(position1: Int, position2: Int) {
+                if (inputs.data.size>1) {
+                    val buffer = inputs.data[position1]
+                    inputs.data[position1] = inputs.data[position2]
+                    inputs.data[position2] = buffer
+                }
+            }
+        })
         recyclerView.adapter = adapter
         recyclerView.addItemDecoration(
             DividerItemDecoration(
@@ -128,6 +140,10 @@ internal class MainFragment : Fragment(), MainScreenView {
                     Toast.LENGTH_LONG
                 ).show()
             }
+        }
+        help_button.setOnClickListener {
+            val dlgHelp: DialogFragment = HelpDialogFragment()
+            dlgHelp.show(requireFragmentManager(), "heeeeeeeelp")
         }
     }
 

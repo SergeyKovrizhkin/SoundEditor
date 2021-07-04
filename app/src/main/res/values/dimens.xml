@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="main_screen_button_horizontal_margin">15dp</dimen>
+    <dimen name="padding_help_pages">10dp</dimen>
 </resources>

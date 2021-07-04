@@ -26,7 +26,7 @@ public class MixerHelper {
     public static void startMixing(FragmentActivity activity, List<Uri> inputs) {
         //For showing progress
         ProgressDialog progressDialog = new ProgressDialog(activity);
-        progressDialog.setMessage("Mixing audio...");
+        progressDialog.setMessage("Экспорт...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setCancelable(false);
         progressDialog.setIndeterminate(false);
@@ -83,7 +83,7 @@ public class MixerHelper {
             }
         });
 
-        progressDialog.setButton(DialogInterface.BUTTON_POSITIVE, "End", new DialogInterface.OnClickListener() {
+        progressDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Отмена", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 audioMixer.stop();
